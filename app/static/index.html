@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI System Diagnostic</title>
+    <link rel="stylesheet" href="/static/assets/dashboard.css?v=20260310_1" />
+    <script defer src="/static/assets/dashboard.js?v=20260310_1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  </head>
+  <body class="sidebarAutoHide">
+    <div class="appShell" id="appShell">
+      <aside class="sidebar" id="sidebar" aria-label="Navigation">
+        <div class="sideTop">
+          <div class="brandRow">
+            <div class="brandMark" aria-hidden="true">
+              <span class="brandMarkDot"></span>
+            </div>
+            <div class="brandBlock">
+              <div class="brand">Enterprise Admin</div>
+              <div class="brandSub">Infrastructure MGMT</div>
+            </div>
+          </div>
+
+          <div class="sideSearchWrap">
+            <input id="sideSearch" class="sideSearch" placeholder="Search infrastructure..." autocomplete="off" />
+          </div>
+        </div>
+
+        <nav class="sideNav" id="sideNav" aria-label="Main">
+          <div class="sideGroup">
+            <a class="sideItem active" href="#" data-action="dashboard" data-label="Dashboard" aria-current="page"><span class="sideIcon">📊</span> Dashboard</a>
+            <a class="sideItem" href="#" data-action="hosts" data-label="Servers"><span class="sideIcon">🖥️</span> Servers</a>
+            <a class="sideItem" href="#" data-action="maps" data-label="Network"><span class="sideIcon">🌐</span> Network</a>
+            <a class="sideItem" href="/inventory" data-action="inventory" data-label="Storage"><span class="sideIcon">💾</span> Storage</a>
+            <a class="sideItem" href="#" data-action="problems" data-label="Security"><span class="sideIcon">🛡️</span> Security</a>
+            <a class="sideItem" href="#" data-action="settings" data-label="Settings"><span class="sideIcon">⚙️</span> Settings</a>
+          </div>
+
+          <div class="sideGroup">
+            <div class="sideGroupTitle">Administration</div>
+            <a class="sideItem" href="/logs" data-action="logs" data-label="System Logs">System Logs</a>
+            <a class="sideItem" href="/users" data-action="users" data-label="Users">Users</a>
+            <a class="sideItem" href="/user-groups" data-action="user-groups" data-label="User groups">User groups</a>
+          </div>
+        </nav>
+
+        <div class="sideBottom" aria-label="Secondary">
+          <button class="supportTicketBtn" type="button">🎫 Support Ticket</button>
+          <form class="sideLogout" method="post" action="/logout">
+            <button class="sideItem sideBtn" type="submit" data-action="logout">Sign out</button>
+          </form>
+        </div>
+      </aside>
+
+      <div class="content" id="content">
+        <div class="frame">
+          <div class="hud">
+            <header class="entHeader">
+              <div class="headLeft">
+                <button id="sideToggle" class="sideToggle" type="button" aria-label="Toggle menu" title="Menu">
+                   <span aria-hidden="true">≡</span>
+                </button>
+                <h1 class="pageTitle">Server Monitoring</h1>
+              </div>
+              <div class="headRight">
+                <div class="headerSearch">
+                  <span class="headerSearchIcon" aria-hidden="true">⌕</span>
+                  <input type="text" placeholder="Search infrastructure..." class="headerSearchInput" />
+                </div>
+                <button class="notifBtn" type="button">🔔<span class="notifBadge">3</span></button>
+                <div class="userProfile">
+                  <div class="avatarCircle">AR</div>
+                  <div class="userMeta">
+                    <span class="userName" id="dashUser">Alex Rivera</span>
+                    <span class="userRole">System Architect</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Hidden elements for JS compatibility -->
+              <div style="display:none;">
+                <span id="date">—</span>
+                <span id="conn">connecting…</span>
+                <span id="host">—</span>
+                <span id="dashMainHost">—</span>
+              </div>
+            </header>
+
+            <!-- Enterprise Dashboard Layout -->
+            <div class="kpiRow">
+              <div class="kpiCard">
+                <div class="kpiMeta">
+                  <div class="kpiEyebrow">Total Servers</div>
+                  <div class="kpiInfo"><div class="kpiValue" id="kpiTotalServers">1,248</div><div class="kpiTrend positive" id="kpiServersTrend">↗ +14 this week</div></div>
+                </div>
+                <div class="kpiIcon kpiServers"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="6" rx="2"/><rect x="2" y="13" width="20" height="6" rx="2"/><circle cx="6" cy="6" r="1"/><circle cx="6" cy="16" r="1"/></svg></div>
+              </div>
+              <div class="kpiCard">
+                <div class="kpiMeta">
+                  <div class="kpiEyebrow">System Uptime</div>
+                  <div class="kpiInfo"><div class="kpiValue" id="kpiUptime">99.98%</div><div class="kpiTrend subtle">Last 30 days</div></div>
+                </div>
+                <div class="kpiIcon kpiUptime"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+              </div>
+              <div class="kpiCard">
+                <div class="kpiMeta">
+                  <div class="kpiEyebrow">Active Warnings</div>
+                  <div class="kpiInfo"><div class="kpiValue" id="kpiWarnings">12</div><div class="kpiTrend warning">2 urgent tickets</div></div>
+                </div>
+                <div class="kpiIcon kpiWarnings"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+              </div>
+              <div class="kpiCard">
+                <div class="kpiMeta">
+                  <div class="kpiEyebrow">Avg. Response</div>
+                  <div class="kpiInfo"><div class="kpiValue" id="kpiResponse">24ms</div><div class="kpiTrend positive" id="kpiResponseTrend">↘ -2ms from yesterday</div></div>
+                </div>
+                <div class="kpiIcon kpiResponse"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+              </div>
+            </div>
+
+            <div class="dashMain">
+              <div class="dashLeft">
+                <div class="dashCard infraCard">
+                  <div class="cardHeader"><h3>Infrastructure Load <span class="cardMuted">(Global CPU)</span></h3><div class="cardTabs"><button class="tabBtn active">24h</button><button class="tabBtn">7d</button></div></div>
+                  <div class="infraBody">
+                    <canvas id="infraChart" height="180"></canvas>
+                    <div class="infraOverlay">
+                      <div class="infraCircle">
+                        <span class="infraPct" id="infraPct">72%</span>
+                        <span class="infraSub">Global CPU</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="midRow">
+                  <div class="dashCard memCard">
+                    <h3>Memory Utilization</h3>
+                    <div class="memDonutWrap">
+                      <svg class="memDonut" viewBox="0 0 200 200">
+                        <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="16"/>
+                        <circle id="memArc" cx="100" cy="100" r="80" fill="none" stroke="#6366f1" stroke-width="16" stroke-linecap="round" stroke-dasharray="502.65" stroke-dashoffset="140.74" transform="rotate(-90 100 100)" style="transition:stroke-dashoffset .6s ease;"/>
+                      </svg>
+                      <div class="memCenter">
+                        <span class="memPct" id="memPctEnt">72%</span>
+                        <span class="memAllocLbl">ALLOCATED</span>
+                      </div>
+                    </div>
+                    <div class="memFooter">
+                      <div class="memFootItem"><span class="memFootLbl">Total RAM</span><span class="memFootVal" id="memTotalRam">4.2 TB</span></div>
+                      <div class="memFootItem"><span class="memFootLbl">Swapped</span><span class="memFootVal" id="memSwapped">12.4 GB</span></div>
+                    </div>
+                  </div>
+
+                  <div class="dashCard diskCard">
+                    <h3>Disk I/O Latency</h3>
+                    <div class="diskBars">
+                      <div class="diskBarRow">
+                        <span class="diskName">NVMe Storage Array 01</span>
+                        <div class="diskBarTrack"><div class="diskBarFill nvme" id="diskNvme" style="width:3%"></div></div>
+                        <span class="diskMs" id="diskNvmeMs">0.4ms</span>
+                      </div>
+                      <div class="diskBarRow">
+                        <span class="diskName">SATA Backup Tier</span>
+                        <div class="diskBarTrack"><div class="diskBarFill sata" id="diskSata" style="width:85%"></div></div>
+                        <span class="diskMs" id="diskSataMs">12.8ms</span>
+                      </div>
+                      <div class="diskBarRow">
+                        <span class="diskName">SSD Cache Pool</span>
+                        <div class="diskBarTrack"><div class="diskBarFill ssd" id="diskSsd" style="width:8%"></div></div>
+                        <span class="diskMs" id="diskSsdMs">1.2ms</span>
+                      </div>
+                    </div>
+                    <div class="diskFooter">
+                      <span class="diskThroughput">Read: <strong>850 MB/s</strong></span>
+                      <span class="diskThroughput">Write: <strong>420 MB/s</strong></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="dashRight">
+                <div class="dashCard eventsCard">
+                  <div class="cardHeader"><h3>System Events</h3><span class="liveBadge">● LIVE</span></div>
+                  <div class="sysEventsList" id="sysEventsList"></div>
+                  <button class="consoleBtn" type="button">View Full Console</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="dashCard serverInvCard">
+              <div class="cardHeader"><h3>Server Inventory</h3><button class="exportBtn" type="button">Export CSV</button></div>
+              <div class="serverInvWrap">
+                <table class="serverInvTable">
+                  <thead><tr><th>Server Name</th><th>IP Address</th><th>Status</th><th>Load</th><th>Uptime</th><th>Action</th></tr></thead>
+                  <tbody id="serverInvTbody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Old grid (hidden, kept for JS compat) -->
+            <div class="grid" style="display:none;">
+              <div class="panel leftTop">
+                <div class="clock">
+                  <div id="time" class="time">--:--</div>
+                  <div id="subtime" class="subtime">—</div>
+                </div>
+
+                <div class="spark">
+                  <div class="label"><span>CPU</span><span id="cpuLbl">—</span></div>
+                  <canvas id="cpuSpark" width="360" height="48"></canvas>
+                </div>
+
+                <div class="spark">
+                  <div class="label"><span>RAM USAGE</span><span id="memLbl">—</span></div>
+                  <canvas id="memSpark" width="360" height="48"></canvas>
+                </div>
+
+                <div class="spark">
+                  <div class="label"><span>DISK USAGE</span><span id="diskLbl">—</span></div>
+                  <canvas id="diskSpark" width="360" height="48"></canvas>
+                </div>
+
+                <div class="spark">
+                  <div class="label"><span>GPU HEALTH</span><span id="gpuHealthLbl">—</span></div>
+                  <canvas id="gpuHealthSpark" width="360" height="48"></canvas>
+                </div>
+              </div>
+
+              <div class="diag">
+                <div class="diagHeader">
+                  <div class="diagTitle">AI SYSTEM DIAGNOSTIC</div>
+                  <div class="status">STATUS: <strong id="diagStatus">STABLE</strong></div>
+                </div>
+                <div class="diagBody">
+                  <p id="diagText" class="muted">Collecting baseline…</p>
+                  <p id="diagRec" class="muted">RECOMMENDATION: —</p>
+                  <div class="ctaRow">
+                    <button id="actionBtn" class="btn" type="button">ACKNOWLEDGE</button>
+                    <button id="dangerBtn" class="btn danger" type="button" style="display:none;">TAKE ACTION</button>
+                    <span id="actionHint" class="hint">(demo only — no processes are killed)</span>
+                  </div>
+                </div>
+
+                <div class="logs">
+                  <div class="logsHeader">
+                    <div class="t">SYSTEM LOGS</div>
+                    <div class="pill" id="pill">—</div>
+                  </div>
+                  <div id="logLines" class="logLines">—</div>
+                </div>
+              </div>
+
+              <div class="panel vitals">
+                <h3>CORE VITALS</h3>
+                <div class="kv">
+                  <div class="kvRow"><span class="k">CPU</span><span id="cpuV" class="v">—</span></div>
+                  <div class="kvRow"><span class="k">RAM</span><span id="ramV" class="v">—</span></div>
+                  <div class="kvRow"><span class="k">DISK</span><span id="diskV" class="v">—</span></div>
+                  <div class="kvRow"><span class="k">NETWORK</span><span id="netV" class="v">—</span></div>
+                  <div class="kvRow"><span class="k">NTP</span><span id="ntpV" class="v proto unknown">—</span></div>
+                  <div class="kvRow"><span class="k">ICMP</span><span id="icmpV" class="v proto unknown">—</span></div>
+                  <div class="kvRow"><span class="k">SNMP</span><span id="snmpV" class="v proto unknown">—</span></div>
+                  <div class="kvRow"><span class="k">NETFLOW</span><span id="netflowV" class="v proto unknown">—</span></div>
+                  <div class="kvRow"><span class="k">UPTIME</span><span id="uptimeV" class="v">—</span></div>
+                  <div class="kvRow"><span class="k">GPU</span><span id="gpuV" class="v">—</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="cmd" style="display:none;">
+              <div class="cmdBar">
+                <div id="hostButtons" class="hostButtons" aria-label="Host status"></div>
+                <div class="prompt">user@system-monitor:~$</div>
+                <input id="cmd" placeholder="type a command (demo)…" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Problems page (single-page view, toggled by dashboard.js via location.hash) -->
+          <section class="problemsView" id="problemsView" aria-label="Problems">
+            <div class="hostsHeader">
+              <div>
+                <div class="hostsTitle">Problems</div>
+                <div class="hostsSub muted">Current issues and recent error events for monitored hosts.</div>
+              </div>
+              <div class="mapsToolbar" role="toolbar" aria-label="Problems toolbar">
+                <label class="mapsSelect">
+                  <span class="k">Severity</span>
+                  <select id="problemsSeverity">
+                    <option value="crit">Critical</option>
+                    <option value="crit_warn" selected>Critical + Warning</option>
+                    <option value="all">All</option>
+                  </select>
+                </label>
+                <label class="mapsSelect">
+                  <span class="k">Search</span>
+                  <input id="problemsSearch" class="sideSearch" style="max-width: 220px;" placeholder="host / check / message" autocomplete="off" />
+                </label>
+                <button id="problemsRefreshBtn" class="hostsBtnSmall" type="button">Refresh</button>
+              </div>
+            </div>
+
+            <div class="problemsGrid">
+              <div class="hostsCard">
+                <div class="hostsCardTitle">Current problems</div>
+                <div id="problemsEmpty" class="hostsEmpty muted" style="display:none;">No problems detected.</div>
+                <div class="hostsTableWrap">
+                  <table class="hostsTable" aria-label="Problems table">
+                    <thead>
+                      <tr>
+                        <th>Scope</th>
+                        <th>Target</th>
+                        <th>Check</th>
+                        <th>Status</th>
+                        <th>Message</th>
+                        <th>Checked</th>
+                      </tr>
+                    </thead>
+                    <tbody id="problemsTbody"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="hostsCard">
+                <div class="hostsCardTitle">Recent host events</div>
+                <div class="muted" style="margin:-6px 0 10px; font-size:12px;">Shows the last 500 events (memory only; resets on server restart).</div>
+                <div id="eventsEmpty" class="hostsEmpty muted" style="display:none;">No recent events.</div>
+                <div id="eventsList" class="eventsList" aria-label="Recent events"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Hosts page (single-page view, toggled by dashboard.js via location.hash) -->
+          <section class="hostsView" id="hostsView" aria-label="Hosts">
+            <div class="hostsHeader">
+              <div>
+                <div class="hostsTitle">Hosts</div>
+                <div class="hostsSub muted">Add and manage monitored hosts inventory (admin-only changes).</div>
+              </div>
+            </div>
+
+            <div id="hostsErr" class="hostsErr" role="alert" style="display:none;"></div>
+
+            <div class="hostsGrid">
+              <form id="hostsForm" class="hostsCard" autocomplete="off">
+                <div class="hostsCardTitle">Add host</div>
+                <div class="hostsFormGrid">
+                  <label class="hostsField">
+                    <span class="k">Hostname</span>
+                    <input id="hostName" required placeholder="web-01" />
+                  </label>
+                  <label class="hostsField">
+                    <span class="k">IP Address</span>
+                    <input id="hostAddress" required placeholder="IP 10.0.0.10 or host.example" />
+                  </label>
+                  <label class="hostsField">
+                    <span class="k">Type</span>
+                    <input id="hostType" list="hostTypeList" placeholder="Linux / Windows / Router…" />
+                    <datalist id="hostTypeList">
+                      <option value="rack-server"></option>
+                      <option value="linux"></option>
+                      <option value="windows"></option>
+                      <option value="switch"></option>
+                      <option value="router"></option>
+                      <option value="firewall"></option>
+                      <option value="patch-panel"></option>
+                      <option value="network"></option>
+                      <option value="other"></option>
+                    </datalist>
+                  </label>
+                  <label class="hostsField">
+                    <span class="k">Tags</span>
+                    <select id="hostTags">
+                      <option value="" selected>—</option>
+                      <option value="Data center">Data center</option>
+                      <option value="Labs">Labs</option>
+                    </select>
+                  </label>
+                  <label class="hostsField hostsFieldWide">
+                    <span class="k">Notes</span>
+                    <textarea id="hostNotes" rows="3" placeholder="Optional notes…"></textarea>
+                  </label>
+                </div>
+                <div class="hostsActions">
+                  <button id="hostsAddBtn" class="btn" type="submit">Add host</button>
+                  <span class="muted">Only admins can add/delete hosts.</span>
+                </div>
+              </form>
+
+              <div class="hostsCard">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                  <div class="hostsCardTitle" style="margin-bottom:0;">Host list</div>
+                  <div style="display:flex; gap:8px;">
+                    <button id="hostsDiscoverBtn" class="hostsBtnSmall" type="button" onclick="startAutoDiscovery()">🔍 Auto Discover</button>
+                    <button class="hostsBtnSmall" type="button" onclick="refreshHosts()">🔄 Refresh</button>
+                  </div>
+                </div>
+                <div id="hostsEmpty" class="hostsEmpty muted" style="display:none;">No hosts yet.</div>
+                <div class="hostsTableWrap">
+                  <table class="hostsTable" aria-label="Hosts table">
+                    <thead>
+                      <tr>
+                        <th>Hostname</th>
+                        <th>Address</th>
+                        <th>Type</th>
+                        <th>Tags</th>
+                        <th>Protocols</th>
+                        <th>Notes</th>
+                        <th>Agent</th>
+                        <th style="width:1%;">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="hostsTbody"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Install Agent Modal -->
+          <div id="installAgentModal" onclick="if(event.target===this)closeInstallAgentModal()" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
+            <div style="background:#1e1e2e; border:1px solid #444; border-radius:10px; padding:30px; width:440px; max-width:95vw; box-shadow:0 8px 32px rgba(0,0,0,0.5);" onclick="event.stopPropagation()">
+              <h2 style="margin:0 0 6px 0; color:#e0e0e0;">⚙ Install Agent</h2>
+              <div id="installAgentHostName" style="color:#aaa; font-size:13px; margin-bottom:20px;"></div>
+              <input type="hidden" id="installAgentHostId">
+              <div style="margin-bottom:14px;">
+                <label style="display:block; color:#aaa; margin-bottom:5px; font-size:13px;">SSH Username</label>
+                <input id="installAgentUser" type="text" style="width:100%; padding:8px 10px; border-radius:5px; border:1px solid #555; background:#2a2a3e; color:#e0e0e0; font-size:14px; box-sizing:border-box;" placeholder="root">
+              </div>
+              <div style="margin-bottom:14px;">
+                <label style="display:block; color:#aaa; margin-bottom:5px; font-size:13px;">SSH Password</label>
+                <input id="installAgentPassword" type="password" style="width:100%; padding:8px 10px; border-radius:5px; border:1px solid #555; background:#2a2a3e; color:#e0e0e0; font-size:14px; box-sizing:border-box;" placeholder="Enter SSH password">
+              </div>
+              <div style="margin-bottom:20px;">
+                <label style="display:block; color:#aaa; margin-bottom:5px; font-size:13px;">SSH Port</label>
+                <input id="installAgentPort" type="number" style="width:100%; padding:8px 10px; border-radius:5px; border:1px solid #555; background:#2a2a3e; color:#e0e0e0; font-size:14px; box-sizing:border-box;" placeholder="22" value="22">
+              </div>
+              <div id="installAgentError" style="color:#ff6b6b; font-size:13px; margin-bottom:10px; display:none;"></div>
+              <div id="installAgentSuccess" style="color:#4caf50; font-size:13px; margin-bottom:10px; display:none;"></div>
+              <div style="display:flex; gap:10px; justify-content:flex-end;">
+                <button onclick="closeInstallAgentModal()" style="padding:9px 18px; border-radius:5px; border:1px solid #555; background:#333; color:#ccc; cursor:pointer; font-size:14px;">Cancel</button>
+                <button id="installAgentRunBtn" onclick="runInstallAgent()" style="padding:9px 18px; border-radius:5px; border:none; background:#28a745; color:white; cursor:pointer; font-size:14px; font-weight:600;">⚙ Install Agent</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Edit Host Modal -->
+          <div id="editHostModal" onclick="if(event.target===this)closeEditHostModal()" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
+            <div style="background:#1e1e2e; border:1px solid #444; border-radius:10px; padding:30px; width:420px; max-width:95vw; box-shadow:0 8px 32px rgba(0,0,0,0.5);" onclick="event.stopPropagation()">
+              <h2 style="margin:0 0 20px 0; color:#e0e0e0;">✏️ Edit Host</h2>
+              <input type="hidden" id="editHostModalId">
+              <div style="margin-bottom:14px;">
+                <label style="display:block; color:#aaa; margin-bottom:5px; font-size:13px;">Display Name</label>
+                <input id="editHostModalName" type="text" style="width:100%; padding:8px 10px; border-radius:5px; border:1px solid #555; background:#2a2a3e; color:#e0e0e0; font-size:14px; box-sizing:border-box;" placeholder="e.g. Web Server 01">
+              </div>
+              <div style="margin-bottom:14px;">
+                <label style="display:block; color:#aaa; margin-bottom:5px; font-size:13px;">IP Address / Hostname</label>
+                <input id="editHostModalAddress" type="text" style="width:100%; padding:8px 10px; border-radius:5px; border:1px solid #555; background:#2a2a3e; color:#e0e0e0; font-size:14px; box-sizing:border-box;" placeholder="e.g. 192.168.1.10">
+              </div>
+              <div style="margin-bottom:14px;">
+                <label style="display:block; color:#aaa; margin-bottom:5px; font-size:13px;">Type</label>
+                <input id="editHostModalType" type="text" list="hostTypeList" style="width:100%; padding:8px 10px; border-radius:5px; border:1px solid #555; background:#2a2a3e; color:#e0e0e0; font-size:14px; box-sizing:border-box;" placeholder="Linux / Windows / Router…">
+              </div>
+              <div style="margin-bottom:20px;">
+                <label style="display:block; color:#aaa; margin-bottom:5px; font-size:13px;">Notes</label>
+                <textarea id="editHostModalNotes" rows="3" style="width:100%; padding:8px 10px; border-radius:5px; border:1px solid #555; background:#2a2a3e; color:#e0e0e0; font-size:14px; box-sizing:border-box; resize:vertical;" placeholder="Optional notes…"></textarea>
+              </div>
+              <div id="editHostModalError" style="color:#ff6b6b; font-size:13px; margin-bottom:10px; display:none;"></div>
+              <div style="display:flex; gap:10px; justify-content:flex-end;">
+                <button onclick="closeEditHostModal()" style="padding:9px 18px; border-radius:5px; border:1px solid #555; background:#333; color:#ccc; cursor:pointer; font-size:14px;">Cancel</button>
+                <button id="editHostModalSaveBtn" onclick="saveEditHost()" style="padding:9px 18px; border-radius:5px; border:none; background:#007bff; color:white; cursor:pointer; font-size:14px; font-weight:600;">💾 Save</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Maps page (single-page view, toggled by dashboard.js via location.hash) -->
+          <section class="mapsView" id="mapsView" aria-label="Maps">
+            <div class="mapsHeader">
+              <div>
+                <div class="mapsTitle">Maps</div>
+                <div class="mapsSub muted">Topology view based on added hosts.</div>
+              </div>
+
+              <div class="mapsToolbar" role="toolbar" aria-label="Maps toolbar">
+                <label class="mapsSelect">
+                  <span class="k">Minimum severity</span>
+                  <select id="mapSeverity">
+                    <option value="not_classified" selected>Not classified (default)</option>
+                    <option value="info">Info</option>
+                    <option value="warn">Warning</option>
+                    <option value="crit">Critical</option>
+                  </select>
+                </label>
+
+                <button id="mapsDiscoverBtn" class="hostsBtnSmall" type="button" onclick="startAutoDiscovery()">🔍 Auto Discover</button>
+                <button id="mapEditBtn" class="hostsBtnSmall" type="button">Edit map</button>
+              </div>
+            </div>
+
+            <div id="mapsErr" class="hostsErr" role="alert" style="display:none;"></div>
+
+            <div id="mapStage" class="mapStage" aria-label="Map stage">
+              <svg id="mapSvg" class="mapSvg" viewBox="0 0 1000 640" preserveAspectRatio="xMidYMid meet"></svg>
+
+              <div id="mapMenu" class="mapMenu" style="display:none;" role="menu" aria-label="Map menu">
+                <button id="mapMenuGoHosts" class="mapMenuItem" type="button" role="menuitem">Go to Hosts</button>
+                <button id="mapMenuCopyAddr" class="mapMenuItem" type="button" role="menuitem">Copy address</button>
+              </div>
+            </div>
+            <div id="mapHint" class="mapHint muted">Tip: click a host to focus it. Enable “Edit map” to drag nodes and save layout.</div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
