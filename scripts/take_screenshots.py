@@ -133,7 +133,7 @@ def main() -> int:
             host_id = None
 
         if host_id is not None:
-            page.goto(f"{base_url}/host?id={host_id}", wait_until="domcontentloaded")
+            page.goto(f"{base_url}/host/{host_id}", wait_until="domcontentloaded")
             page.wait_for_timeout(2000)
             _shot(page, out_dir / "12_host_monitor.png")
 
