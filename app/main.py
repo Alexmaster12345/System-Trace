@@ -171,17 +171,23 @@ async def login_page(request: Request) -> Any:
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>System Dashboard Login</title>
-        <link rel="stylesheet" href="/static/assets/login.css" />
+        <title>System Trace · Login</title>
+        <link rel="stylesheet" href="/static/assets/login.css?v=%%APP_VERSION%%" />
     </head>
     <body class="login">
         <div class="loginWrap">
-            <div class="loginLogo" aria-hidden="true">System Trace</div>
+            <div class="loginBrand">
+                <div class="loginBrandMark" aria-hidden="true"><span class="loginBrandDot"></span></div>
+                <div class="loginBrandText">
+                    <div class="loginBrandName">Enterprise Admin</div>
+                    <div class="loginBrandSub">Infrastructure MGMT</div>
+                </div>
+            </div>
 
             <form class="loginCard" method="post" action="/login" novalidate>
                 <div class="loginCardHeader">
-                    <h1 class="loginTitle">System Dashboard Login</h1>
-                    <div class="loginSub">Sign in to view metrics and insights.</div>
+                    <h1 class="loginTitle">Sign in</h1>
+                    <div class="loginSub">Monitor and manage your infrastructure.</div>
                 </div>
 
                 <div class="loginCardBody">
@@ -206,12 +212,12 @@ async def login_page(request: Request) -> Any:
                     %%ERR_HTML%%
 
                     <div class="actions">
-                        <button class="primary" type="submit">Sign in</button>
+                        <button class="primary" type="submit">Sign in &rarr;</button>
                     </div>
                 </div>
 
                 <div class="loginFoot">
-                    <div class="meta">AI System Health Dashboard · v%%APP_VERSION%%</div>
+                    <div class="meta">System Trace · v%%APP_VERSION%%</div>
                     %%HELP_HTML%%
                 </div>
             </form>

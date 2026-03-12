@@ -7,7 +7,7 @@
 */
 
 :root {
-  --ui-scale: 1.08;
+  --ui-scale: 1.10;
   --bg: #070b14;
   --grid: rgba(0, 255, 255, 0.08);
   --glass: rgba(0, 0, 0, 0.28);
@@ -27,11 +27,11 @@
   --gpu: #a78bfa;
 
   /* Responsive spacing primitives */
-  --frame-pad-x: clamp(12px, 2.2vw, 22px);
-  --frame-pad-y: clamp(10px, 2.2vw, 24px);
-  --grid-gap: clamp(10px, 1.4vw, 14px);
-  --grid-pad: clamp(12px, 1.6vw, 18px);
-  --panel-pad: clamp(12px, 1.4vw, 16px);
+  --frame-pad-x: clamp(20px, 3.2vw, 42px);
+  --frame-pad-y: clamp(18px, 3.2vw, 42px);
+  --grid-gap: clamp(15px, 2.2vw, 26px);
+  --grid-pad: clamp(20px, 2.6vw, 34px);
+  --panel-pad: clamp(17px, 2.2vw, 28px);
 
   /* Container width for large displays */
   --container-max: 2000px;
@@ -269,6 +269,9 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
   flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .sideGroup {
@@ -909,6 +912,7 @@ tr.hostMetricsRow td {
   border-top: 1px solid rgba(255,255,255,0.08);
   display: grid;
   gap: 6px;
+  flex-shrink: 0;
 }
 
 .sideLogout { margin: 0; }
@@ -917,6 +921,10 @@ tr.hostMetricsRow td {
   width: 100%;
   justify-content: flex-start;
   background: rgba(0,0,0,0.18);
+}
+.sideBtn:hover {
+  background: rgba(239,68,68,0.12);
+  color: #f87171;
 }
 
 /* Collapsed sidebar (desktop) */
@@ -1034,11 +1042,11 @@ body.wallboard .content { margin-left: 0 !important; }
 }
 
 header {
-  padding: 14px 18px;
+  padding: 16px 22px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   background: rgba(0,0,0,0.18);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255,255,255,0.06);
@@ -1047,14 +1055,14 @@ header {
 }
 
 .date {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
   letter-spacing: 0.6px;
   text-transform: uppercase;
 }
 
 .title {
-  font-size: 13px;
+  font-size: 15px;
   letter-spacing: 0.8px;
   font-weight: 700;
   color: color-mix(in srgb, var(--text) 82%, transparent);
@@ -1116,7 +1124,7 @@ header {
 
 .time {
   font-variant-numeric: tabular-nums;
-  font-size: clamp(28px, 5.5vw, 44px);
+  font-size: clamp(38px, 6.8vw, 62px);
   line-height: 1;
   letter-spacing: 1px;
 }
@@ -1141,14 +1149,14 @@ header {
   justify-content: space-between;
   gap: 10px;
   align-items: baseline;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
   letter-spacing: 0.3px;
 }
 
 .spark canvas {
   width: 100%;
-  height: 48px;
+  height: 58px;
   display: block;
 }
 
@@ -1170,7 +1178,7 @@ header {
 .diagTitle {
   font-weight: 800;
   letter-spacing: 1px;
-  font-size: 13px;
+  font-size: 17px;
 }
 
 .status {
@@ -1195,8 +1203,8 @@ header {
 
 .diagBody p {
   margin: 0;
-  font-size: 13px;
-  line-height: 1.35;
+  font-size: 14px;
+  line-height: 1.45;
   color: color-mix(in srgb, var(--text) 88%, transparent);
 }
 
@@ -1252,12 +1260,12 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 12px;
-  padding: 10px;
+  gap: 14px;
+  padding: 11px 14px;
   border-radius: 12px;
   border: 1px solid rgba(255,255,255,0.08);
   background: rgba(0,0,0,0.18);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .kvRow .k {
@@ -1723,6 +1731,43 @@ body.wallboard .hint { display: none; }
 .userRole {
   font-size: 11px;
   color: var(--muted);
+}
+
+/* Logout button in header next to user profile */
+.headerLogoutBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: transparent;
+  color: var(--muted);
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.headerLogoutBtn:hover {
+  background: rgba(239,68,68,0.15);
+  color: #f87171;
+  border-color: rgba(239,68,68,0.3);
+}
+
+/* Sign out item in sidebar nav */
+.sideGroupLogout {
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.sideSignOut {
+  width: 100%;
+  color: var(--muted);
+}
+.sideSignOut:hover {
+  background: rgba(239,68,68,0.12) !important;
+  color: #f87171 !important;
+  border-color: rgba(239,68,68,0.2) !important;
 }
 
 /* --- KPI Row --- */

@@ -57,7 +57,7 @@ ai-system-health-dashboard/
 ![Dashboard](docs/screenshots/02_dashboard.png)
 
 ### Hosts
-![Hosts](docs/screenshots/04_hosts_v2.png)
+![Hosts](docs/screenshots/09_hosts_mgmt.png)
 
 ### Maps
 ![Maps](docs/screenshots/05_maps.png)

@@ -12,43 +12,36 @@
     <div class="appShell">
       <aside class="sidebar" id="sidebar" aria-label="Navigation">
         <div class="sideTop">
-          <div class="brandRow"><div class="brand">System Trace</div></div>
+          <div class="brandRow">
+            <div class="brandMark" aria-hidden="true"><span class="brandMarkDot"></span></div>
+            <div class="brandBlock">
+              <div class="brand">Enterprise Admin</div>
+              <div class="brandSub">Infrastructure MGMT</div>
+            </div>
+          </div>
           <div class="sideSearchWrap">
-            <input id="sideSearch" class="sideSearch" placeholder="Search…" autocomplete="off" />
+            <input id="sideSearch" class="sideSearch" placeholder="Search infrastructure..." autocomplete="off" />
           </div>
         </div>
         <nav class="sideNav" id="sideNav" aria-label="Main">
           <div class="sideGroup">
-            <div class="sideGroupTitle">Monitoring</div>
-            <a class="sideItem" href="/#dashboard" data-label="Dashboard">Dashboard</a>
-            <a class="sideItem" href="/#problems" data-label="Problems">Problems</a>
-            <a class="sideItem" href="/#hosts" data-label="Hosts">Hosts</a>
-            <a class="sideItem" href="/#overview" data-label="Overview">Overview</a>
-            <a class="sideItem" href="/#screens" data-label="Screens">Screens</a>
-            <a class="sideItem" href="/#maps" data-label="Maps">Maps</a>
-          </div>
-          <div class="sideGroup">
-            <div class="sideGroupTitle">Inventory</div>
-            <a class="sideItem" href="/inventory" data-label="Inventory">Inventory</a>
-          </div>
-          <div class="sideGroup">
-            <div class="sideGroupTitle">Reports</div>
-            <a class="sideItem" href="/#reports" data-label="Reports">Reports</a>
-          </div>
-          <div class="sideGroup">
-            <div class="sideGroupTitle">Configuration</div>
-            <a class="sideItem" href="/#configuration" data-label="Configuration">Configuration</a>
+            <a class="sideItem" href="/" data-action="dashboard" data-label="Dashboard"><span class="sideIcon">📊</span> Dashboard</a>
+            <a class="sideItem" href="/hosts" data-action="hosts" data-label="Servers"><span class="sideIcon">🖥️</span> Servers</a>
+            <a class="sideItem" href="/maps" data-action="maps" data-label="Network"><span class="sideIcon">🌐</span> Network</a>
+            <a class="sideItem" href="/inventory" data-action="inventory" data-label="Storage"><span class="sideIcon">💾</span> Storage</a>
+            <a class="sideItem" href="/configuration" data-action="configuration" data-label="Security"><span class="sideIcon">🛡️</span> Security</a>
+            <a class="sideItem" href="/logs" data-action="logs" data-label="Settings" aria-current="page"><span class="sideIcon">⚙️</span> Settings</a>
           </div>
           <div class="sideGroup">
             <div class="sideGroupTitle">Administration</div>
-            <a class="sideItem active" href="/logs" data-label="System Logs">System Logs</a>
-            <a class="sideItem" href="/users" data-label="Users">Users</a>
-            <a class="sideItem" href="/user-groups" data-label="User groups">User groups</a>
+            <a class="sideItem" href="/users" data-action="users" data-label="Users">Users</a>
+            <a class="sideItem" href="/user-groups" data-action="user-groups" data-label="User groups">User groups</a>
           </div>
         </nav>
-        <div class="sideBottom">
+        <div class="sideBottom" aria-label="Secondary">
+          <button class="supportTicketBtn" type="button">🎫 Support Ticket</button>
           <form class="sideLogout" method="post" action="/logout">
-            <button class="sideItem sideBtn" type="submit">Sign out</button>
+            <button class="sideItem sideBtn" type="submit" data-action="logout"><span class="sideIcon">🚪</span> Sign out</button>
           </form>
         </div>
       </aside>

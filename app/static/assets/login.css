@@ -1,5 +1,5 @@
 /* Public login page styles (must be accessible without authentication).
-  Dark glass HUD styling to match the dashboard.
+  Dark glass HUD styling to match the dashboard Enterprise Admin theme.
 */
 
 :root {
@@ -9,20 +9,21 @@
 
   --bg0: #04060c;
   --bg1: #070b14;
-  --card: rgba(0, 0, 0, 0.32);
-  --panel: rgba(0, 0, 0, 0.18);
-  --border: rgba(120, 230, 255, 0.18);
-  --text: rgba(233, 249, 255, 0.92);
-  --muted: rgba(233, 249, 255, 0.62);
-  --field: rgba(0, 0, 0, 0.18);
-  --shadow: rgba(0, 0, 0, 0.55);
+  --card: rgba(10, 16, 36, 0.72);
+  --panel: rgba(0, 0, 8, 0.32);
+  --border: rgba(92, 112, 161, 0.22);
+  --text: #ccd7f6;
+  --muted: #7280a1;
+  --field: #0b1428;
+  --shadow: rgba(0, 0, 0, 0.70);
 
-  --accent: #6ee7ff;
-  --accent2: #55ffa6;
+  --accent: #3d63ff;
+  --accent-light: #6486ff;
+  --accent-text: #8ea5ff;
   --crit: #ff4d6d;
 
   --pad: clamp(14px, 2.8vw, 22px);
-  --radius: 16px;
+  --radius: 14px;
 }
 
 * { box-sizing: border-box; }
@@ -39,41 +40,77 @@ body.login {
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   color: var(--text);
   background:
-    radial-gradient(900px 700px at 12% 20%, rgba(110, 231, 255, 0.18), transparent 60%),
-    radial-gradient(900px 700px at 88% 14%, rgba(85, 255, 166, 0.14), transparent 62%),
-    radial-gradient(1000px 800px at 50% 120%, rgba(255, 209, 102, 0.10), transparent 62%),
+    radial-gradient(900px 700px at 12% 20%, rgba(61, 99, 255, 0.18), transparent 60%),
+    radial-gradient(900px 700px at 88% 14%, rgba(100, 134, 255, 0.12), transparent 62%),
+    radial-gradient(1000px 800px at 50% 120%, rgba(61, 99, 255, 0.10), transparent 62%),
     linear-gradient(180deg, var(--bg0), var(--bg1));
 }
 
 .loginWrap {
   width: min(480px, 92vw);
   display: grid;
-  gap: 14px;
+  gap: 20px;
   zoom: var(--ui-scale);
 }
 
-.loginLogo {
-  justify-self: center;
-  font-weight: 950;
-  letter-spacing: 1.2px;
-  font-size: 12px;
-  padding: 8px 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(120, 230, 255, 0.22);
-  background: rgba(0, 0, 0, 0.24);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
-  color: color-mix(in srgb, var(--text) 86%, transparent);
+/* Brand header — matches sidebar brandRow in dashboard */
+.loginBrand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+}
+
+.loginBrandMark {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #3d63ff, #6486ff);
+  border: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 18px rgba(61, 99, 255, 0.32);
+  flex-shrink: 0;
+}
+
+.loginBrandDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #f1f5ff;
+  display: block;
+}
+
+.loginBrandText {
+  display: flex;
+  flex-direction: column;
+}
+
+.loginBrandName {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0;
+  color: #f7f9ff;
+  line-height: 1.15;
+}
+
+.loginBrandSub {
+  font-size: 9px;
+  color: #7280a1;
+  letter-spacing: 1.1px;
   text-transform: uppercase;
+  margin-top: 2px;
 }
 
 .loginCard {
   width: 100%;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(92, 112, 161, 0.18);
   border-radius: var(--radius);
   background: var(--card);
   box-shadow: 0 26px 70px var(--shadow);
   overflow: hidden;
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(12px);
 }
 
 .loginCardHeader {
@@ -116,11 +153,12 @@ input[type="text"],
 input[type="password"] {
   width: 100%;
   padding: 11px 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 10px;
+  border: 1px solid rgba(92, 112, 161, 0.18);
   background: var(--field);
   color: var(--text);
   outline: none;
+  font-size: 13px;
 }
 
 input::placeholder {
@@ -138,13 +176,13 @@ input:-webkit-autofill:focus {
 }
 
 input:focus-visible {
-  border-color: color-mix(in srgb, var(--accent) 70%, rgba(255,255,255,0.12));
-  box-shadow: 0 0 0 4px rgba(110, 231, 255, 0.12);
+  border-color: rgba(61, 99, 255, 0.60);
+  box-shadow: 0 0 0 3px rgba(61, 99, 255, 0.16);
 }
 
 input[aria-invalid="true"] {
-  border-color: rgba(185, 28, 28, 0.45);
-  box-shadow: 0 0 0 4px rgba(185, 28, 28, 0.10);
+  border-color: rgba(185, 28, 28, 0.55);
+  box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.12);
 }
 
 .pwRow {
@@ -156,21 +194,23 @@ input[aria-invalid="true"] {
 
 .pwToggle {
   padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(0, 0, 0, 0.22);
-  color: color-mix(in srgb, var(--text) 82%, transparent);
+  border-radius: 10px;
+  border: 1px solid rgba(92, 112, 161, 0.18);
+  background: rgba(11, 20, 40, 0.60);
+  color: var(--muted);
+  font-size: 12px;
   font-weight: 700;
   cursor: pointer;
 }
 
 .pwToggle:hover {
-  border-color: color-mix(in srgb, var(--accent) 70%, rgba(255,255,255,0.12));
+  border-color: rgba(61, 99, 255, 0.45);
+  color: var(--accent-text);
 }
 
 .pwToggle:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 4px rgba(110, 231, 255, 0.14);
+  box-shadow: 0 0 0 3px rgba(61, 99, 255, 0.18);
 }
 
 .check {
@@ -178,12 +218,14 @@ input[aria-invalid="true"] {
   align-items: center;
   gap: 10px;
   user-select: none;
-  color: color-mix(in srgb, var(--text) 78%, transparent);
+  color: var(--muted);
+  font-size: 12px;
 }
 
 .check input {
   width: 16px;
   height: 16px;
+  accent-color: var(--accent);
 }
 
 .actions {
@@ -195,31 +237,33 @@ input[aria-invalid="true"] {
 button.primary {
   width: 100%;
   padding: 11px 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(110, 231, 255, 0.35);
-  background: rgba(0, 0, 0, 0.22);
-  color: rgba(255, 255, 255, 0.96);
-  font-weight: 800;
+  border-radius: 8px;
+  border: 0;
+  background: #3d63ff;
+  color: #f5f8ff;
+  font-weight: 700;
+  font-size: 13px;
   letter-spacing: 0.2px;
   cursor: pointer;
+  transition: background 0.2s;
 }
 
 button.primary:hover {
-  border-color: color-mix(in srgb, var(--accent) 70%, rgba(255,255,255,0.12));
+  background: #5577ff;
 }
 
 button.primary:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 4px rgba(110, 231, 255, 0.14);
+  box-shadow: 0 0 0 3px rgba(61, 99, 255, 0.36);
 }
 
 .err {
   margin: 2px 0 0;
   padding: 10px 12px;
-  border-radius: 12px;
+  border-radius: 10px;
   border: 1px solid rgba(255, 77, 109, 0.35);
   background: rgba(255, 77, 109, 0.08);
-  color: color-mix(in srgb, var(--crit) 92%, white 8%);
+  color: #f87171;
   font-size: 12px;
   line-height: 1.35;
 }
@@ -241,7 +285,7 @@ button.primary:focus-visible {
 }
 
 .helpLink {
-  color: color-mix(in srgb, var(--accent2) 80%, rgba(255,255,255,0.18));
+  color: var(--accent-text);
   text-decoration: none;
   font-weight: 700;
 }

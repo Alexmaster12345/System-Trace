@@ -13,15 +13,12 @@
       <aside class="sidebar" id="sidebar" aria-label="Navigation">
         <div class="sideTop">
           <div class="brandRow">
-            <div class="brandMark" aria-hidden="true">
-              <span class="brandMarkDot"></span>
-            </div>
+            <div class="brandMark" aria-hidden="true"><span class="brandMarkDot"></span></div>
             <div class="brandBlock">
               <div class="brand">Enterprise Admin</div>
               <div class="brandSub">Infrastructure MGMT</div>
             </div>
           </div>
-
           <div class="sideSearchWrap">
             <input id="sideSearch" class="sideSearch" placeholder="Search infrastructure..." autocomplete="off" />
           </div>
@@ -29,17 +26,15 @@
 
         <nav class="sideNav" id="sideNav" aria-label="Main">
           <div class="sideGroup">
-            <a class="sideItem active" href="#" data-action="dashboard" data-label="Dashboard" aria-current="page"><span class="sideIcon">📊</span> Dashboard</a>
-            <a class="sideItem" href="#" data-action="hosts" data-label="Servers"><span class="sideIcon">🖥️</span> Servers</a>
-            <a class="sideItem" href="#" data-action="maps" data-label="Network"><span class="sideIcon">🌐</span> Network</a>
+            <a class="sideItem" href="/" data-action="dashboard" data-label="Dashboard" aria-current="page"><span class="sideIcon">📊</span> Dashboard</a>
+            <a class="sideItem" href="/hosts" data-action="hosts" data-label="Servers"><span class="sideIcon">🖥️</span> Servers</a>
+            <a class="sideItem" href="/maps" data-action="maps" data-label="Network"><span class="sideIcon">🌐</span> Network</a>
             <a class="sideItem" href="/inventory" data-action="inventory" data-label="Storage"><span class="sideIcon">💾</span> Storage</a>
-            <a class="sideItem" href="#" data-action="problems" data-label="Security"><span class="sideIcon">🛡️</span> Security</a>
-            <a class="sideItem" href="#" data-action="settings" data-label="Settings"><span class="sideIcon">⚙️</span> Settings</a>
+            <a class="sideItem" href="/configuration" data-action="configuration" data-label="Security"><span class="sideIcon">🛡️</span> Security</a>
+            <a class="sideItem" href="/logs" data-action="logs" data-label="Settings"><span class="sideIcon">⚙️</span> Settings</a>
           </div>
-
           <div class="sideGroup">
             <div class="sideGroupTitle">Administration</div>
-            <a class="sideItem" href="/logs" data-action="logs" data-label="System Logs">System Logs</a>
             <a class="sideItem" href="/users" data-action="users" data-label="Users">Users</a>
             <a class="sideItem" href="/user-groups" data-action="user-groups" data-label="User groups">User groups</a>
           </div>
@@ -48,7 +43,7 @@
         <div class="sideBottom" aria-label="Secondary">
           <button class="supportTicketBtn" type="button">🎫 Support Ticket</button>
           <form class="sideLogout" method="post" action="/logout">
-            <button class="sideItem sideBtn" type="submit" data-action="logout">Sign out</button>
+            <button class="sideItem sideBtn" type="submit" data-action="logout"><span class="sideIcon">🚪</span> Sign out</button>
           </form>
         </div>
       </aside>
@@ -75,6 +70,9 @@
                     <span class="userName" id="dashUser">Alex Rivera</span>
                     <span class="userRole">System Architect</span>
                   </div>
+                  <form method="post" action="/logout" style="margin:0;">
+                    <button class="headerLogoutBtn" type="submit" title="Sign out">&#x2192;&#x25AF;</button>
+                  </form>
                 </div>
               </div>
               <!-- Hidden elements for JS compatibility -->
