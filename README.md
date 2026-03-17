@@ -390,9 +390,9 @@ Environment variables for network monitoring:
 
 Example configuration:
 ```bash
-SNMP_HOST=192.168.50.198
+SNMP_HOST=<YOUR_AGENT_HOST>
 SNMP_COMMUNITY=public
-ICMP_HOST=192.168.50.198
+ICMP_HOST=<YOUR_AGENT_HOST>
 NTP_SERVER=pool.ntp.org
 PROTOCOL_CHECK_INTERVAL_SECONDS=30
 ```
@@ -402,7 +402,7 @@ PROTOCOL_CHECK_INTERVAL_SECONDS=30
 #### SNMP Issues
 ```bash
 # Test SNMP connectivity
-snmpwalk -v2c -c public 192.168.50.198 1.3.6.1.2.1.1.1.0
+snmpwalk -v2c -c public <YOUR_AGENT_HOST> 1.3.6.1.2.1.1.1.0
 
 # Check SNMP service
 systemctl status snmpd
