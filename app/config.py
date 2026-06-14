@@ -84,6 +84,28 @@ class Settings:
     # NetFlow collector (local UDP port expected to be bound)
     netflow_port: int = _get_int("NETFLOW_PORT", 2055)
 
+    # Slack notifications (empty webhook disables)
+    slack_webhook_url: str = _get_str("SLACK_WEBHOOK_URL", "")
+    slack_channel: str = _get_str("SLACK_CHANNEL", "")
+    # Minimum anomaly severity that triggers an automatic Slack alert: warn or crit
+    slack_alert_min_severity: str = _get_str("SLACK_ALERT_MIN_SEVERITY", "crit")
+    # Minimum seconds between repeat alerts for the same metric
+    slack_alert_cooldown_seconds: int = _get_int("SLACK_ALERT_COOLDOWN_SECONDS", 600)
+
+    # Email notifications (empty SMTP host disables)
+    smtp_host: str = _get_str("SMTP_HOST", "")
+    smtp_port: int = _get_int("SMTP_PORT", 587)
+    smtp_username: str = _get_str("SMTP_USERNAME", "")
+    smtp_password: str = _get_str("SMTP_PASSWORD", "")
+    smtp_use_tls: bool = bool(int(_get_str("SMTP_USE_TLS", "1") or "1"))
+    smtp_from_addr: str = _get_str("SMTP_FROM_ADDR", "")
+    # Comma-separated list of recipient addresses
+    alert_email_to: str = _get_str("ALERT_EMAIL_TO", "")
+    # Minimum anomaly severity that triggers an automatic email alert: warn or crit
+    email_alert_min_severity: str = _get_str("EMAIL_ALERT_MIN_SEVERITY", "crit")
+    # Minimum seconds between repeat alerts for the same metric
+    email_alert_cooldown_seconds: int = _get_int("EMAIL_ALERT_COOLDOWN_SECONDS", 600)
+
 
 settings = Settings()
 

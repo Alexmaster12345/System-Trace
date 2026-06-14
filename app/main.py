@@ -24,6 +24,14 @@ from .auth_storage import auth_storage, init_auth_storage
 from .config import settings
 from .metrics import add_sample, collect_sample, history, latest
 from .models import HostCreate, InventoryItemCreate, ProtocolStatus
+from .notifications import (
+    email_enabled,
+    send_email,
+    send_slack_message,
+    severity_meets_email_threshold,
+    severity_meets_slack_threshold,
+    slack_enabled,
+)
 from .storage import create_host as db_create_host
 from .storage import create_inventory_item as db_create_inventory_item
 from .storage import get_history as db_get_history
@@ -372,6 +380,76 @@ async def api_history(seconds: int = 300) -> Any:
 @app.get("/api/insights")
 async def api_insights() -> Any:
     return compute_insights().model_dump()
+
+
+@app.post("/api/admin/notifications/slack")
+async def post_slack_message(request: Request) -> Any:
+    """Send an arbitrary message to Slack (admin only)."""
+    user = await _get_current_user(request)
+    if user is None or user.role != "admin":
+        return JSONResponse({"detail": "Forbidden"}, status_code=403)
+    if not slack_enabled():
+        return JSONResponse({"detail": "Slack is not configured (SLACK_WEBHOOK_URL missing)"}, status_code=400)
+    body = await request.json()
+    text = str(body.get("text", "")).strip()
+    if not text:
+        return JSONResponse({"detail": "text is required"}, status_code=400)
+    ok = await asyncio.to_thread(send_slack_message, text)
+    if not ok:
+        return JSONResponse({"detail": "Failed to send Slack message"}, status_code=502)
+    return {"sent": True}
+
+
+@app.post("/api/admin/notifications/slack-test")
+async def post_slack_test(request: Request) -> Any:
+    """Send a test message + current insights to Slack (admin only)."""
+    user = await _get_current_user(request)
+    if user is None or user.role != "admin":
+        return JSONResponse({"detail": "Forbidden"}, status_code=403)
+    if not slack_enabled():
+        return JSONResponse({"detail": "Slack is not configured (SLACK_WEBHOOK_URL missing)"}, status_code=400)
+    insights = compute_insights()
+    text = f":mag: System-Trace test alert — {insights.summary}"
+    ok = await asyncio.to_thread(send_slack_message, text)
+    if not ok:
+        return JSONResponse({"detail": "Failed to send Slack message"}, status_code=502)
+    return {"sent": True}
+
+
+@app.post("/api/admin/notifications/email")
+async def post_email_message(request: Request) -> Any:
+    """Send an arbitrary alert email (admin only)."""
+    user = await _get_current_user(request)
+    if user is None or user.role != "admin":
+        return JSONResponse({"detail": "Forbidden"}, status_code=403)
+    if not email_enabled():
+        return JSONResponse({"detail": "Email is not configured (SMTP_HOST/ALERT_EMAIL_TO missing)"}, status_code=400)
+    body = await request.json()
+    subject = str(body.get("subject", "")).strip() or "System-Trace alert"
+    text = str(body.get("text", "")).strip()
+    if not text:
+        return JSONResponse({"detail": "text is required"}, status_code=400)
+    ok = await asyncio.to_thread(send_email, subject, text)
+    if not ok:
+        return JSONResponse({"detail": "Failed to send email"}, status_code=502)
+    return {"sent": True}
+
+
+@app.post("/api/admin/notifications/email-test")
+async def post_email_test(request: Request) -> Any:
+    """Send a test email with current insights (admin only)."""
+    user = await _get_current_user(request)
+    if user is None or user.role != "admin":
+        return JSONResponse({"detail": "Forbidden"}, status_code=403)
+    if not email_enabled():
+        return JSONResponse({"detail": "Email is not configured (SMTP_HOST/ALERT_EMAIL_TO missing)"}, status_code=400)
+    insights = compute_insights()
+    ok = await asyncio.to_thread(
+        send_email, "System-Trace test alert", f"Test alert — {insights.summary}"
+    )
+    if not ok:
+        return JSONResponse({"detail": "Failed to send email"}, status_code=502)
+    return {"sent": True}
 
 
 @app.get("/api/me")
@@ -1240,6 +1318,31 @@ async def _host_checker_loop() -> None:
         await asyncio.sleep(_HOST_CHECK_INTERVAL_S)
 
 
+_slack_alert_last_sent: dict[str, float] = {}
+_email_alert_last_sent: dict[str, float] = {}
+
+
+async def _maybe_send_alerts(insights: Any) -> None:
+    if not slack_enabled() and not email_enabled():
+        return
+    now = time.time()
+    for anomaly in insights.anomalies:
+        if slack_enabled() and severity_meets_slack_threshold(anomaly.severity):
+            last_sent = _slack_alert_last_sent.get(anomaly.metric, 0.0)
+            if now - last_sent >= settings.slack_alert_cooldown_seconds:
+                _slack_alert_last_sent[anomaly.metric] = now
+                emoji = ":rotating_light:" if anomaly.severity == "crit" else ":warning:"
+                text = f"{emoji} System-Trace alert ({anomaly.severity}): {anomaly.message}"
+                await asyncio.to_thread(send_slack_message, text)
+
+        if email_enabled() and severity_meets_email_threshold(anomaly.severity):
+            last_sent = _email_alert_last_sent.get(anomaly.metric, 0.0)
+            if now - last_sent >= settings.email_alert_cooldown_seconds:
+                _email_alert_last_sent[anomaly.metric] = now
+                subject = f"System-Trace alert ({anomaly.severity}): {anomaly.metric}"
+                await asyncio.to_thread(send_email, subject, anomaly.message)
+
+
 async def _sampler_loop() -> None:
     # Warm up CPU percent counters
     collect_sample()
@@ -1258,6 +1361,7 @@ async def _sampler_loop() -> None:
                 last_prune = now
                 await prune_old()
         insights = compute_insights()
+        await _maybe_send_alerts(insights)
         await broadcaster.broadcast(
             {
                 "type": "sample",
