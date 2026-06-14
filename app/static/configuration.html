@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>System Trace · Configuration</title>
     <link rel="stylesheet" href="/static/assets/dashboard.css?v=20260310_1" />
-    <link rel="stylesheet" href="/static/assets/configuration.css?v=20260310_1" />
+    <link rel="stylesheet" href="/static/assets/configuration.css?v=20260614_1" />
     <script defer src="/static/assets/dashboard.js?v=20260310_1"></script>
-    <script defer src="/static/assets/configuration.js?v=20260207"></script>
+    <script defer src="/static/assets/configuration.js?v=20260614_1"></script>
     <style>
     body.sidebarAutoHide:not(.sidebarHover):not(.sidebarOpen) .sidebar {
       transform: translateX(calc(-100% + 18px)) !important;
@@ -68,12 +68,13 @@
 
         <nav class="sideNav" id="sideNav" aria-label="Main">
           <div class="sideGroup">
-            <a class="sideItem" href="/" data-action="dashboard" data-label="Dashboard"><span class="sideIcon">📊</span> Dashboard</a>
-            <a class="sideItem" href="/hosts" data-action="hosts" data-label="Servers"><span class="sideIcon">🖥️</span> Servers</a>
-            <a class="sideItem" href="/maps" data-action="maps" data-label="Network"><span class="sideIcon">🌐</span> Network</a>
-            <a class="sideItem" href="/inventory" data-action="inventory" data-label="Storage"><span class="sideIcon">💾</span> Storage</a>
-            <a class="sideItem" href="/configuration" data-action="configuration" data-label="Security" aria-current="page"><span class="sideIcon">🛡️</span> Security</a>
-            <a class="sideItem" href="/logs" data-action="logs" data-label="Settings"><span class="sideIcon">⚙️</span> Settings</a>
+            <a class="sideItem" href="/" data-action="dashboard" data-label="Dashboard"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span> Dashboard</a>
+            <a class="sideItem" href="/hosts" data-action="hosts" data-label="Servers"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="5" rx="2"/><rect x="2" y="11" width="20" height="5" rx="2"/><circle cx="6" cy="5.5" r="1" fill="currentColor"/><circle cx="6" cy="13.5" r="1" fill="currentColor"/></svg></span> Servers</a>
+            <a class="sideItem" href="/maps" data-action="maps" data-label="Network"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span> Network</a>
+            <a class="sideItem" href="/inventory" data-action="inventory" data-label="Inventory"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span> Inventory</a>
+            <a class="sideItem" href="/configuration" data-action="configuration" data-label="Configuration" aria-current="page"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span> Configuration</a>
+            <a class="sideItem" href="/info" data-action="info" data-label="Info"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span> Info</a>
+            <a class="sideItem" href="/logs" data-action="logs" data-label="Logs"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span> Logs</a>
           </div>
           <div class="sideGroup">
             <div class="sideGroupTitle">Administration</div>
@@ -85,7 +86,7 @@
         <div class="sideBottom" aria-label="Secondary">
           <button class="supportTicketBtn" type="button">🎫 Support Ticket</button>
           <form class="sideLogout" method="post" action="/logout">
-            <button class="sideItem sideBtn" type="submit" data-action="logout"><span class="sideIcon">🚪</span> Sign out</button>
+            <button class="sideItem sideBtn" type="submit" data-action="logout"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Sign out</button>
           </form>
         </div>
       </aside>
@@ -95,7 +96,7 @@
           <header class="cfgHeader">
             <div>
               <div class="cfgTitle">Configuration</div>
-              <div class="cfgSub muted">Read-only view of server settings (secrets hidden).</div>
+              <div class="cfgSub muted">Manage Slack and email alert notifications.</div>
             </div>
             <div class="cfgBadge">
               <span class="dot"></span>
@@ -108,76 +109,92 @@
           <div id="cfgErr" class="hostsErr" role="alert" style="display:none;"></div>
 
           <div class="cfgGrid">
-            <section class="hostsCard">
-              <div class="hostsCardTitle">App</div>
-              <div class="cfgKv">
-                <div class="cfgKvRow"><span class="k">Title: </span><span id="cfgAppTitle" class="v">—</span></div>
-                <div class="cfgKvRow"><span class="k">Version: </span><span id="cfgAppVersion" class="v">—</span></div>
-                <div class="cfgKvRow"><span class="k">Help URL: </span><span id="cfgHelpUrl" class="v">—</span></div>
-              </div>
+
+            <section class="hostsCard hostsFieldWide" id="cfgNotifyCard" style="display:none;">
+              <div class="hostsCardTitle">Alert notifications (admin)</div>
+              <div id="cfgNotifyErr" class="hostsErr" role="alert" style="display:none;"></div>
+              <div id="cfgNotifyMsg" class="muted cfgSmall" style="display:none;"></div>
+              <form id="cfgNotifyForm">
+                <div class="muted cfgSmall" style="margin-bottom:6px;">Slack</div>
+                <div class="hostsFormGrid">
+                  <div class="hostsField hostsFieldWide">
+                    <label for="cfgSlackWebhook">Webhook URL</label>
+                    <input id="cfgSlackWebhook" type="text" placeholder="https://hooks.slack.com/services/..." autocomplete="off" />
+                  </div>
+                  <div class="hostsField">
+                    <label for="cfgSlackChannel">Channel (optional)</label>
+                    <input id="cfgSlackChannel" type="text" placeholder="#alerts" autocomplete="off" />
+                  </div>
+                  <div class="hostsField">
+                    <label for="cfgSlackSeverity">Min severity</label>
+                    <select id="cfgSlackSeverity">
+                      <option value="info">info</option>
+                      <option value="warn">warn</option>
+                      <option value="crit">crit</option>
+                    </select>
+                  </div>
+                  <div class="hostsField">
+                    <label for="cfgSlackCooldown">Cooldown (seconds)</label>
+                    <input id="cfgSlackCooldown" type="number" min="0" step="1" />
+                  </div>
+                </div>
+                <div class="hostsActions">
+                  <button class="btn" type="button" id="cfgSlackTestBtn">Send test message</button>
+                </div>
+
+                <div class="muted cfgSmall" style="margin:14px 0 6px;">Email (SMTP)</div>
+                <div class="hostsFormGrid">
+                  <div class="hostsField">
+                    <label for="cfgSmtpHost">SMTP host</label>
+                    <input id="cfgSmtpHost" type="text" placeholder="smtp.example.com" autocomplete="off" />
+                  </div>
+                  <div class="hostsField">
+                    <label for="cfgSmtpPort">SMTP port</label>
+                    <input id="cfgSmtpPort" type="number" min="1" step="1" placeholder="587" />
+                  </div>
+                  <div class="hostsField">
+                    <label for="cfgSmtpUsername">SMTP username</label>
+                    <input id="cfgSmtpUsername" type="text" autocomplete="off" />
+                  </div>
+                  <div class="hostsField">
+                    <label for="cfgSmtpPassword">SMTP password</label>
+                    <input id="cfgSmtpPassword" type="password" placeholder="(unchanged)" autocomplete="new-password" />
+                  </div>
+                  <div class="hostsField">
+                    <label for="cfgSmtpFrom">From address</label>
+                    <input id="cfgSmtpFrom" type="text" placeholder="alerts@example.com" autocomplete="off" />
+                  </div>
+                  <div class="hostsField">
+                    <label for="cfgSmtpUseTls">Use STARTTLS</label>
+                    <select id="cfgSmtpUseTls">
+                      <option value="1">Yes</option>
+                      <option value="0">No</option>
+                    </select>
+                  </div>
+                  <div class="hostsField hostsFieldWide">
+                    <label for="cfgAlertEmailTo">Alert recipients (comma-separated)</label>
+                    <input id="cfgAlertEmailTo" type="text" placeholder="ops@example.com, oncall@example.com" autocomplete="off" />
+                  </div>
+                  <div class="hostsField">
+                    <label for="cfgEmailSeverity">Min severity</label>
+                    <select id="cfgEmailSeverity">
+                      <option value="info">info</option>
+                      <option value="warn">warn</option>
+                      <option value="crit">crit</option>
+                    </select>
+                  </div>
+                  <div class="hostsField">
+                    <label for="cfgEmailCooldown">Cooldown (seconds)</label>
+                    <input id="cfgEmailCooldown" type="number" min="0" step="1" />
+                  </div>
+                </div>
+                <div class="hostsActions">
+                  <button class="btn" type="button" id="cfgEmailTestBtn">Send test email</button>
+                  <button class="btn" type="submit" id="cfgNotifySaveBtn">Save notification settings</button>
+                </div>
+              </form>
             </section>
 
-            <section class="hostsCard">
-              <div class="hostsCardTitle">Sampling</div>
-              <div class="cfgKv">
-                <div class="cfgKvRow"><span class="k">Sample interval: </span><span id="cfgSampleInterval" class="v">—</span></div>
-                <div class="cfgKvRow"><span class="k">History window: </span><span id="cfgHistorySeconds" class="v">—</span></div>
-              </div>
-            </section>
-
-            <section class="hostsCard">
-              <div class="hostsCardTitle">Anomaly detection</div>
-              <div class="cfgKv">
-                <div class="cfgKvRow"><span class="k">Window: </span><span id="cfgAnomWindow" class="v">—</span></div>
-                <div class="cfgKvRow"><span class="k">Z threshold: </span><span id="cfgAnomZ" class="v">—</span></div>
-              </div>
-            </section>
-
-            <section class="hostsCard">
-              <div class="hostsCardTitle">Protocol checks</div>
-              <div class="cfgKv">
-                <div class="cfgKvRow"><span class="k">Check interval: </span><span id="cfgProtoInterval" class="v">—</span></div>
-                <div class="cfgKvRow"><span class="k">NTP server: </span><span id="cfgNtpServer" class="v">—</span></div>
-                <div class="cfgKvRow"><span class="k">NTP timeout: </span><span id="cfgNtpTimeout" class="v">—</span></div>
-                <div class="cfgKvRow"><span class="k">ICMP host: </span><span id="cfgIcmpHost" class="v">—</span></div>
-                <div class="cfgKvRow"><span class="k">ICMP timeout: </span><span id="cfgIcmpTimeout" class="v">—</span></div>
-                <div class="cfgKvRow"><span class="k">SNMP host: </span><span id="cfgSnmpHost" class="v">—</span></div>
-                <div class="cfgKvRow"><span class="k">SNMP port: </span><span id="cfgSnmpPort" class="v">—</span></div>
-                <div class="cfgKvRow"><span class="k">SNMP timeout: </span><span id="cfgSnmpTimeout" class="v">—</span></div>
-                <div class="cfgKvRow"><span class="k">SNMP community set: </span><span id="cfgSnmpCommunitySet" class="v">—</span></div>
-                <div class="cfgKvRow"><span class="k">NetFlow port: </span><span id="cfgNetflowPort" class="v">—</span></div>
-              </div>
-              <div class="muted cfgSmall">Note: leaving SNMP host empty disables SNMP checks.</div>
-            </section>
-
-            <section class="hostsCard">
-              <div class="hostsCardTitle">Storage</div>
-              <div class="cfgKv">
-                <div class="cfgKvRow"><span class="k">Enabled: </span><span id="cfgStorageEnabled" class="v">—</span></div>
-                <div class="cfgKvRow"><span class="k">Retention: </span><span id="cfgRetention" class="v">—</span></div>
-              </div>
-              <div id="cfgDbBlock" style="display:none;">
-                <div class="muted cfgSmall">Admin DB stats:</div>
-                <pre id="cfgDbJson" class="cfgPre"></pre>
-              </div>
-            </section>
-
-            <section class="hostsCard" id="cfgPathsCard" style="display:none;">
-              <div class="hostsCardTitle">Paths (admin)</div>
-              <pre id="cfgPathsJson" class="cfgPre"></pre>
-            </section>
-
-            <section class="hostsCard">
-              <div class="hostsCardTitle">Auth cookies</div>
-              <div class="cfgKv">
-                <div class="cfgKvRow"><span class="k">Session cookie: </span><span id="cfgSessName" class="v">—</span></div>
-                <div class="cfgKvRow"><span class="k">Session max age: </span><span id="cfgSessAge" class="v">—</span></div>
-                <div class="cfgKvRow"><span class="k">SameSite: </span><span id="cfgSameSite" class="v">—</span></div>
-                <div class="cfgKvRow"><span class="k">Secure: </span><span id="cfgSecure" class="v">—</span></div>
-                <div class="cfgKvRow"><span class="k">Remember cookie: </span><span id="cfgRememberName" class="v">—</span></div>
-                <div class="cfgKvRow"><span class="k">Remember max age: </span><span id="cfgRememberAge" class="v">—</span></div>
-              </div>
-            </section>
           </div>
         </div>
       </div>

@@ -24,6 +24,7 @@ from .auth_storage import auth_storage, init_auth_storage
 from .config import settings
 from .metrics import add_sample, collect_sample, history, latest
 from .models import HostCreate, InventoryItemCreate, ProtocolStatus
+from . import notification_settings
 from .notifications import (
     email_enabled,
     send_email,
@@ -339,6 +340,12 @@ async def configuration_page() -> Any:
         return f.read()
 
 
+@app.get("/info", response_class=HTMLResponse)
+async def info_page() -> Any:
+    with open("app/static/info.html", "r", encoding="utf-8") as f:
+        return f.read()
+
+
 @app.get("/inventory", response_class=HTMLResponse)
 async def inventory_page() -> Any:
     with open("app/static/inventory.html", "r", encoding="utf-8") as f:
@@ -380,6 +387,33 @@ async def api_history(seconds: int = 300) -> Any:
 @app.get("/api/insights")
 async def api_insights() -> Any:
     return compute_insights().model_dump()
+
+
+@app.get("/api/admin/notifications/config")
+async def get_notification_config(request: Request) -> Any:
+    """Return the current Slack/email alert configuration (admin only, secrets masked)."""
+    user = await _get_current_user(request)
+    if user is None or user.role != "admin":
+        return JSONResponse({"detail": "Forbidden"}, status_code=403)
+    return await asyncio.to_thread(notification_settings.public_settings)
+
+
+@app.put("/api/admin/notifications/config")
+async def put_notification_config(request: Request) -> Any:
+    """Update Slack/email alert configuration (admin only).
+
+    Send only the fields you want to change. Pass a field as null to reset it
+    back to its environment-configured default. smtp_password is left
+    unchanged unless explicitly provided.
+    """
+    user = await _get_current_user(request)
+    if user is None or user.role != "admin":
+        return JSONResponse({"detail": "Forbidden"}, status_code=403)
+    body = await request.json()
+    if not isinstance(body, dict):
+        return JSONResponse({"detail": "Invalid request body"}, status_code=400)
+    await asyncio.to_thread(notification_settings.update_settings, body)
+    return await asyncio.to_thread(notification_settings.public_settings)
 
 
 @app.post("/api/admin/notifications/slack")

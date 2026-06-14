@@ -10,41 +10,26 @@
     user: $('cfgUser'),
     err: $('cfgErr'),
 
-    appTitle: $('cfgAppTitle'),
-    appVersion: $('cfgAppVersion'),
-    helpUrl: $('cfgHelpUrl'),
-
-    sampleInterval: $('cfgSampleInterval'),
-    historySeconds: $('cfgHistorySeconds'),
-
-    anomWindow: $('cfgAnomWindow'),
-    anomZ: $('cfgAnomZ'),
-
-    protoInterval: $('cfgProtoInterval'),
-    ntpServer: $('cfgNtpServer'),
-    ntpTimeout: $('cfgNtpTimeout'),
-    icmpHost: $('cfgIcmpHost'),
-    icmpTimeout: $('cfgIcmpTimeout'),
-    snmpHost: $('cfgSnmpHost'),
-    snmpPort: $('cfgSnmpPort'),
-    snmpTimeout: $('cfgSnmpTimeout'),
-    snmpCommunitySet: $('cfgSnmpCommunitySet'),
-    netflowPort: $('cfgNetflowPort'),
-
-    storageEnabled: $('cfgStorageEnabled'),
-    retention: $('cfgRetention'),
-    dbBlock: document.getElementById('cfgDbBlock'),
-    dbJson: document.getElementById('cfgDbJson'),
-
-    pathsCard: document.getElementById('cfgPathsCard'),
-    pathsJson: document.getElementById('cfgPathsJson'),
-
-    sessName: $('cfgSessName'),
-    sessAge: $('cfgSessAge'),
-    sameSite: $('cfgSameSite'),
-    secure: $('cfgSecure'),
-    rememberName: $('cfgRememberName'),
-    rememberAge: $('cfgRememberAge'),
+    notifyCard: document.getElementById('cfgNotifyCard'),
+    notifyForm: document.getElementById('cfgNotifyForm'),
+    notifyErr: document.getElementById('cfgNotifyErr'),
+    notifyMsg: document.getElementById('cfgNotifyMsg'),
+    slackWebhook: document.getElementById('cfgSlackWebhook'),
+    slackChannel: document.getElementById('cfgSlackChannel'),
+    slackSeverity: document.getElementById('cfgSlackSeverity'),
+    slackCooldown: document.getElementById('cfgSlackCooldown'),
+    slackTestBtn: document.getElementById('cfgSlackTestBtn'),
+    smtpHost: document.getElementById('cfgSmtpHost'),
+    smtpPort: document.getElementById('cfgSmtpPort'),
+    smtpUsername: document.getElementById('cfgSmtpUsername'),
+    smtpPassword: document.getElementById('cfgSmtpPassword'),
+    smtpFrom: document.getElementById('cfgSmtpFrom'),
+    smtpUseTls: document.getElementById('cfgSmtpUseTls'),
+    alertEmailTo: document.getElementById('cfgAlertEmailTo'),
+    emailSeverity: document.getElementById('cfgEmailSeverity'),
+    emailCooldown: document.getElementById('cfgEmailCooldown'),
+    emailTestBtn: document.getElementById('cfgEmailTestBtn'),
+    notifySaveBtn: document.getElementById('cfgNotifySaveBtn'),
 
     sideNav: document.getElementById('sideNav'),
     sideSearch: document.getElementById('sideSearch'),
@@ -90,22 +75,114 @@
     el.textContent = txt == null ? '—' : String(txt);
   }
 
-  function fmtSeconds(s) {
-    if (s == null) return '—';
-    const n = Number(s);
-    if (!Number.isFinite(n)) return '—';
-    if (n >= 86400) return `${Math.round((n / 86400) * 10) / 10} days`;
-    if (n >= 3600) return `${Math.round((n / 3600) * 10) / 10} hours`;
-    if (n >= 60) return `${Math.round((n / 60) * 10) / 10} minutes`;
-    return `${Math.round(n * 10) / 10} seconds`;
+  function setNotifyErr(msg) {
+    if (!els.notifyErr) return;
+    if (!msg) {
+      els.notifyErr.style.display = 'none';
+      els.notifyErr.textContent = '';
+      return;
+    }
+    els.notifyErr.style.display = '';
+    els.notifyErr.textContent = String(msg);
   }
 
-  function fmtNumber(n, digits) {
-    if (n == null) return '—';
-    const v = Number(n);
-    if (!Number.isFinite(v)) return '—';
-    const d = typeof digits === 'number' ? digits : 2;
-    return v.toFixed(d);
+  function setNotifyMsg(msg) {
+    if (!els.notifyMsg) return;
+    if (!msg) {
+      els.notifyMsg.style.display = 'none';
+      els.notifyMsg.textContent = '';
+      return;
+    }
+    els.notifyMsg.style.display = '';
+    els.notifyMsg.textContent = String(msg);
+  }
+
+  function fillNotifyForm(cfg) {
+    if (!cfg) return;
+    els.slackWebhook.value = cfg.slack_webhook_url || '';
+    els.slackChannel.value = cfg.slack_channel || '';
+    els.slackSeverity.value = cfg.slack_alert_min_severity || 'crit';
+    els.slackCooldown.value = cfg.slack_alert_cooldown_seconds ?? 600;
+    els.smtpHost.value = cfg.smtp_host || '';
+    els.smtpPort.value = cfg.smtp_port ?? 587;
+    els.smtpUsername.value = cfg.smtp_username || '';
+    els.smtpPassword.value = '';
+    els.smtpPassword.placeholder = cfg.smtp_password ? '(unchanged — currently set)' : '(not set)';
+    els.smtpFrom.value = cfg.smtp_from_addr || '';
+    els.smtpUseTls.value = cfg.smtp_use_tls ? '1' : '0';
+    els.alertEmailTo.value = cfg.alert_email_to || '';
+    els.emailSeverity.value = cfg.email_alert_min_severity || 'crit';
+    els.emailCooldown.value = cfg.email_alert_cooldown_seconds ?? 600;
+  }
+
+  async function loadNotifyConfig() {
+    const cfg = await fetchJson('/api/admin/notifications/config');
+    fillNotifyForm(cfg);
+  }
+
+  async function saveNotifyConfig(e) {
+    e.preventDefault();
+    setNotifyErr('');
+    setNotifyMsg('');
+    const body = {
+      slack_webhook_url: els.slackWebhook.value.trim(),
+      slack_channel: els.slackChannel.value.trim(),
+      slack_alert_min_severity: els.slackSeverity.value,
+      slack_alert_cooldown_seconds: parseInt(els.slackCooldown.value, 10) || 0,
+      smtp_host: els.smtpHost.value.trim(),
+      smtp_port: parseInt(els.smtpPort.value, 10) || 587,
+      smtp_username: els.smtpUsername.value.trim(),
+      smtp_use_tls: els.smtpUseTls.value === '1',
+      smtp_from_addr: els.smtpFrom.value.trim(),
+      alert_email_to: els.alertEmailTo.value.trim(),
+      email_alert_min_severity: els.emailSeverity.value,
+      email_alert_cooldown_seconds: parseInt(els.emailCooldown.value, 10) || 0,
+    };
+    // Only send the password if the user typed a new one.
+    if (els.smtpPassword.value) body.smtp_password = els.smtpPassword.value;
+
+    try {
+      const cfg = await fetchJson('/api/admin/notifications/config', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      fillNotifyForm(cfg);
+      setNotifyMsg('Saved.');
+    } catch (err) {
+      setNotifyErr(err && err.message ? err.message : 'Failed to save notification settings');
+    }
+  }
+
+  async function sendTestNotification(url, btn, label) {
+    setNotifyErr('');
+    setNotifyMsg('');
+    const original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+    try {
+      await fetchJson(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+      setNotifyMsg(`${label} sent.`);
+    } catch (err) {
+      setNotifyErr(err && err.message ? err.message : `Failed to send ${label.toLowerCase()}`);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = original;
+    }
+  }
+
+  function setupNotifyForm() {
+    if (els.notifyForm) els.notifyForm.addEventListener('submit', saveNotifyConfig);
+    if (els.slackTestBtn) {
+      els.slackTestBtn.addEventListener('click', () =>
+        sendTestNotification('/api/admin/notifications/slack-test', els.slackTestBtn, 'Slack test message')
+      );
+    }
+    if (els.emailTestBtn) {
+      els.emailTestBtn.addEventListener('click', () =>
+        sendTestNotification('/api/admin/notifications/email-test', els.emailTestBtn, 'Test email')
+      );
+    }
   }
 
   function setupSidebarSearch() {
@@ -128,57 +205,23 @@
   async function init() {
     els.conn.textContent = 'loading…';
     setupSidebarSearch();
+    setupNotifyForm();
 
     try {
-      const [me, cfg] = await Promise.all([fetchJson('/api/me'), fetchJson('/api/config')]);
+      const me = await fetchJson('/api/me');
 
       setText(els.user, me && me.username ? me.username : '—');
 
-      setText(els.appTitle, cfg && cfg.app ? cfg.app.title : '—');
-      setText(els.appVersion, cfg && cfg.app ? cfg.app.version : '—');
-      setText(els.helpUrl, cfg && cfg.app && cfg.app.help_url ? cfg.app.help_url : '—');
-
-      setText(els.sampleInterval, cfg && cfg.sampling ? fmtSeconds(cfg.sampling.sample_interval_seconds) : '—');
-      setText(els.historySeconds, cfg && cfg.sampling ? fmtSeconds(cfg.sampling.history_seconds) : '—');
-
-      setText(els.anomWindow, cfg && cfg.anomaly ? fmtSeconds(cfg.anomaly.window_seconds) : '—');
-      setText(els.anomZ, cfg && cfg.anomaly ? fmtNumber(cfg.anomaly.z_threshold, 2) : '—');
-
-      setText(els.protoInterval, cfg && cfg.protocols ? fmtSeconds(cfg.protocols.check_interval_seconds) : '—');
-      setText(els.ntpServer, cfg && cfg.protocols && cfg.protocols.ntp ? cfg.protocols.ntp.server : '—');
-      setText(els.ntpTimeout, cfg && cfg.protocols && cfg.protocols.ntp ? fmtSeconds(cfg.protocols.ntp.timeout_seconds) : '—');
-      setText(els.icmpHost, cfg && cfg.protocols && cfg.protocols.icmp ? cfg.protocols.icmp.host : '—');
-      setText(els.icmpTimeout, cfg && cfg.protocols && cfg.protocols.icmp ? fmtSeconds(cfg.protocols.icmp.timeout_seconds) : '—');
-      setText(els.snmpHost, cfg && cfg.protocols && cfg.protocols.snmp ? (cfg.protocols.snmp.host || '—') : '—');
-      setText(els.snmpPort, cfg && cfg.protocols && cfg.protocols.snmp ? cfg.protocols.snmp.port : '—');
-      setText(els.snmpTimeout, cfg && cfg.protocols && cfg.protocols.snmp ? fmtSeconds(cfg.protocols.snmp.timeout_seconds) : '—');
-      setText(els.snmpCommunitySet, cfg && cfg.protocols && cfg.protocols.snmp ? String(!!cfg.protocols.snmp.community_set) : '—');
-      setText(els.netflowPort, cfg && cfg.protocols && cfg.protocols.netflow ? cfg.protocols.netflow.port : '—');
-
-      setText(els.storageEnabled, cfg && cfg.storage ? String(!!cfg.storage.enabled) : '—');
-      setText(els.retention, cfg && cfg.storage ? fmtSeconds(cfg.storage.sqlite_retention_seconds) : '—');
-
-      if (els.dbBlock) {
-        const hasDbStats = cfg && cfg.storage && cfg.storage.db_stats;
-        els.dbBlock.style.display = hasDbStats ? '' : 'none';
-        if (els.dbJson && hasDbStats) els.dbJson.textContent = JSON.stringify(cfg.storage.db_stats, null, 2);
+      if (els.notifyCard) {
+        if (me && me.role === 'admin') {
+          els.notifyCard.style.display = '';
+          await loadNotifyConfig();
+        } else {
+          setErr('Admin access required to manage alert notifications.');
+        }
       }
-
-      if (els.pathsCard) {
-        const hasPaths = cfg && cfg.paths;
-        els.pathsCard.style.display = hasPaths ? '' : 'none';
-        if (els.pathsJson && hasPaths) els.pathsJson.textContent = JSON.stringify(cfg.paths, null, 2);
-      }
-
-      setText(els.sessName, cfg && cfg.auth ? cfg.auth.session_cookie_name : '—');
-      setText(els.sessAge, cfg && cfg.auth ? fmtSeconds(cfg.auth.session_max_age_seconds) : '—');
-      setText(els.sameSite, cfg && cfg.auth ? cfg.auth.session_cookie_samesite : '—');
-      setText(els.secure, cfg && cfg.auth ? String(!!cfg.auth.session_cookie_secure) : '—');
-      setText(els.rememberName, cfg && cfg.auth ? cfg.auth.remember_cookie_name : '—');
-      setText(els.rememberAge, cfg && cfg.auth ? fmtSeconds(cfg.auth.remember_max_age_seconds) : '—');
 
       els.conn.textContent = 'ready';
-      setErr('');
     } catch (e) {
       els.conn.textContent = 'error';
       setErr(e && e.message ? e.message : 'Failed to load configuration');
