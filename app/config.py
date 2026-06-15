@@ -106,6 +106,21 @@ class Settings:
     # Minimum seconds between repeat alerts for the same metric
     email_alert_cooldown_seconds: int = _get_int("EMAIL_ALERT_COOLDOWN_SECONDS", 600)
 
+    # Microsoft Teams notifications (empty webhook disables)
+    teams_webhook_url: str = _get_str("TEAMS_WEBHOOK_URL", "")
+    teams_alert_min_severity: str = _get_str("TEAMS_ALERT_MIN_SEVERITY", "crit")
+    teams_alert_cooldown_seconds: int = _get_int("TEAMS_ALERT_COOLDOWN_SECONDS", 600)
+
+    # Discord notifications (empty webhook disables)
+    discord_webhook_url: str = _get_str("DISCORD_WEBHOOK_URL", "")
+    discord_alert_min_severity: str = _get_str("DISCORD_ALERT_MIN_SEVERITY", "crit")
+    discord_alert_cooldown_seconds: int = _get_int("DISCORD_ALERT_COOLDOWN_SECONDS", 600)
+
+    # PagerDuty Events API v2 (empty routing key disables)
+    pagerduty_routing_key: str = _get_str("PAGERDUTY_ROUTING_KEY", "")
+    pagerduty_alert_min_severity: str = _get_str("PAGERDUTY_ALERT_MIN_SEVERITY", "crit")
+    pagerduty_alert_cooldown_seconds: int = _get_int("PAGERDUTY_ALERT_COOLDOWN_SECONDS", 600)
+
 
 settings = Settings()
 

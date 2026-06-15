@@ -30,6 +30,22 @@
     emailCooldown: document.getElementById('cfgEmailCooldown'),
     emailTestBtn: document.getElementById('cfgEmailTestBtn'),
     notifySaveBtn: document.getElementById('cfgNotifySaveBtn'),
+    testAllBtn: document.getElementById('cfgTestAllBtn'),
+
+    teamsWebhook: document.getElementById('cfgTeamsWebhook'),
+    teamsSeverity: document.getElementById('cfgTeamsSeverity'),
+    teamsCooldown: document.getElementById('cfgTeamsCooldown'),
+    teamsTestBtn: document.getElementById('cfgTeamsTestBtn'),
+
+    discordWebhook: document.getElementById('cfgDiscordWebhook'),
+    discordSeverity: document.getElementById('cfgDiscordSeverity'),
+    discordCooldown: document.getElementById('cfgDiscordCooldown'),
+    discordTestBtn: document.getElementById('cfgDiscordTestBtn'),
+
+    pagerdutyRoutingKey: document.getElementById('cfgPagerdutyRoutingKey'),
+    pagerdutySeverity: document.getElementById('cfgPagerdutySeverity'),
+    pagerdutyCooldown: document.getElementById('cfgPagerdutyCooldown'),
+    pagerdutyTestBtn: document.getElementById('cfgPagerdutyTestBtn'),
 
     sideNav: document.getElementById('sideNav'),
     sideSearch: document.getElementById('sideSearch'),
@@ -113,6 +129,19 @@
     els.alertEmailTo.value = cfg.alert_email_to || '';
     els.emailSeverity.value = cfg.email_alert_min_severity || 'crit';
     els.emailCooldown.value = cfg.email_alert_cooldown_seconds ?? 600;
+
+    els.teamsWebhook.value = cfg.teams_webhook_url || '';
+    els.teamsSeverity.value = cfg.teams_alert_min_severity || 'crit';
+    els.teamsCooldown.value = cfg.teams_alert_cooldown_seconds ?? 600;
+
+    els.discordWebhook.value = cfg.discord_webhook_url || '';
+    els.discordSeverity.value = cfg.discord_alert_min_severity || 'crit';
+    els.discordCooldown.value = cfg.discord_alert_cooldown_seconds ?? 600;
+
+    els.pagerdutyRoutingKey.value = '';
+    els.pagerdutyRoutingKey.placeholder = cfg.pagerduty_routing_key ? '(unchanged — currently set)' : '(not set)';
+    els.pagerdutySeverity.value = cfg.pagerduty_alert_min_severity || 'crit';
+    els.pagerdutyCooldown.value = cfg.pagerduty_alert_cooldown_seconds ?? 600;
   }
 
   async function loadNotifyConfig() {
@@ -137,9 +166,18 @@
       alert_email_to: els.alertEmailTo.value.trim(),
       email_alert_min_severity: els.emailSeverity.value,
       email_alert_cooldown_seconds: parseInt(els.emailCooldown.value, 10) || 0,
+      teams_webhook_url: els.teamsWebhook.value.trim(),
+      teams_alert_min_severity: els.teamsSeverity.value,
+      teams_alert_cooldown_seconds: parseInt(els.teamsCooldown.value, 10) || 0,
+      discord_webhook_url: els.discordWebhook.value.trim(),
+      discord_alert_min_severity: els.discordSeverity.value,
+      discord_alert_cooldown_seconds: parseInt(els.discordCooldown.value, 10) || 0,
+      pagerduty_alert_min_severity: els.pagerdutySeverity.value,
+      pagerduty_alert_cooldown_seconds: parseInt(els.pagerdutyCooldown.value, 10) || 0,
     };
-    // Only send the password if the user typed a new one.
+    // Only send secrets if the user typed a new value.
     if (els.smtpPassword.value) body.smtp_password = els.smtpPassword.value;
+    if (els.pagerdutyRoutingKey.value) body.pagerduty_routing_key = els.pagerdutyRoutingKey.value;
 
     try {
       const cfg = await fetchJson('/api/admin/notifications/config', {
@@ -171,6 +209,31 @@
     }
   }
 
+  async function testAllChannels() {
+    setNotifyErr('');
+    setNotifyMsg('');
+    const btn = els.testAllBtn;
+    const original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+    try {
+      const data = await fetchJson('/api/admin/notifications/test-all', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: '{}',
+      });
+      const parts = Object.entries(data.results || {}).map(
+        ([channel, r]) => `${channel}: ${r.sent ? 'ok' : 'failed'}`
+      );
+      setNotifyMsg(parts.length ? `Test results — ${parts.join(', ')}` : 'No channels configured.');
+    } catch (err) {
+      setNotifyErr(err && err.message ? err.message : 'Failed to test channels');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = original;
+    }
+  }
+
   function setupNotifyForm() {
     if (els.notifyForm) els.notifyForm.addEventListener('submit', saveNotifyConfig);
     if (els.slackTestBtn) {
@@ -182,6 +245,24 @@
       els.emailTestBtn.addEventListener('click', () =>
         sendTestNotification('/api/admin/notifications/email-test', els.emailTestBtn, 'Test email')
       );
+    }
+    if (els.teamsTestBtn) {
+      els.teamsTestBtn.addEventListener('click', () =>
+        sendTestNotification('/api/admin/notifications/teams-test', els.teamsTestBtn, 'Teams test message')
+      );
+    }
+    if (els.discordTestBtn) {
+      els.discordTestBtn.addEventListener('click', () =>
+        sendTestNotification('/api/admin/notifications/discord-test', els.discordTestBtn, 'Discord test message')
+      );
+    }
+    if (els.pagerdutyTestBtn) {
+      els.pagerdutyTestBtn.addEventListener('click', () =>
+        sendTestNotification('/api/admin/notifications/pagerduty-test', els.pagerdutyTestBtn, 'PagerDuty test alert')
+      );
+    }
+    if (els.testAllBtn) {
+      els.testAllBtn.addEventListener('click', testAllChannels);
     }
   }
 

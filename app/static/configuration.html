@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>System Trace · Configuration</title>
     <link rel="stylesheet" href="/static/assets/dashboard.css?v=20260310_1" />
-    <link rel="stylesheet" href="/static/assets/configuration.css?v=20260614_1" />
+    <link rel="stylesheet" href="/static/assets/configuration.css?v=20260615_1" />
     <script defer src="/static/assets/dashboard.js?v=20260310_1"></script>
-    <script defer src="/static/assets/configuration.js?v=20260614_1"></script>
+    <script defer src="/static/assets/configuration.js?v=20260615_1"></script>
     <style>
     body.sidebarAutoHide:not(.sidebarHover):not(.sidebarOpen) .sidebar {
       transform: translateX(calc(-100% + 18px)) !important;
@@ -188,9 +188,79 @@
                     <input id="cfgEmailCooldown" type="number" min="0" step="1" />
                   </div>
                 </div>
+                <div class="muted cfgSmall" style="margin:14px 0 6px;">Microsoft Teams</div>
+                <div class="hostsFormGrid">
+                  <div class="hostsField hostsFieldWide">
+                    <label for="cfgTeamsWebhook">Webhook URL</label>
+                    <input id="cfgTeamsWebhook" type="text" placeholder="https://outlook.office.com/webhook/..." autocomplete="off" />
+                  </div>
+                  <div class="hostsField">
+                    <label for="cfgTeamsSeverity">Min severity</label>
+                    <select id="cfgTeamsSeverity">
+                      <option value="info">info</option>
+                      <option value="warn">warn</option>
+                      <option value="crit">crit</option>
+                    </select>
+                  </div>
+                  <div class="hostsField">
+                    <label for="cfgTeamsCooldown">Cooldown (seconds)</label>
+                    <input id="cfgTeamsCooldown" type="number" min="0" step="1" />
+                  </div>
+                </div>
+                <div class="hostsActions">
+                  <button class="btn" type="button" id="cfgTeamsTestBtn">Send test message</button>
+                </div>
+
+                <div class="muted cfgSmall" style="margin:14px 0 6px;">Discord</div>
+                <div class="hostsFormGrid">
+                  <div class="hostsField hostsFieldWide">
+                    <label for="cfgDiscordWebhook">Webhook URL</label>
+                    <input id="cfgDiscordWebhook" type="text" placeholder="https://discord.com/api/webhooks/..." autocomplete="off" />
+                  </div>
+                  <div class="hostsField">
+                    <label for="cfgDiscordSeverity">Min severity</label>
+                    <select id="cfgDiscordSeverity">
+                      <option value="info">info</option>
+                      <option value="warn">warn</option>
+                      <option value="crit">crit</option>
+                    </select>
+                  </div>
+                  <div class="hostsField">
+                    <label for="cfgDiscordCooldown">Cooldown (seconds)</label>
+                    <input id="cfgDiscordCooldown" type="number" min="0" step="1" />
+                  </div>
+                </div>
+                <div class="hostsActions">
+                  <button class="btn" type="button" id="cfgDiscordTestBtn">Send test message</button>
+                </div>
+
+                <div class="muted cfgSmall" style="margin:14px 0 6px;">PagerDuty</div>
+                <div class="hostsFormGrid">
+                  <div class="hostsField hostsFieldWide">
+                    <label for="cfgPagerdutyRoutingKey">Events API v2 routing key</label>
+                    <input id="cfgPagerdutyRoutingKey" type="password" placeholder="(unchanged)" autocomplete="new-password" />
+                  </div>
+                  <div class="hostsField">
+                    <label for="cfgPagerdutySeverity">Min severity</label>
+                    <select id="cfgPagerdutySeverity">
+                      <option value="info">info</option>
+                      <option value="warn">warn</option>
+                      <option value="crit">crit</option>
+                    </select>
+                  </div>
+                  <div class="hostsField">
+                    <label for="cfgPagerdutyCooldown">Cooldown (seconds)</label>
+                    <input id="cfgPagerdutyCooldown" type="number" min="0" step="1" />
+                  </div>
+                </div>
+                <div class="hostsActions">
+                  <button class="btn" type="button" id="cfgPagerdutyTestBtn">Send test alert</button>
+                </div>
+
                 <div class="hostsActions">
                   <button class="btn" type="button" id="cfgEmailTestBtn">Send test email</button>
                   <button class="btn" type="submit" id="cfgNotifySaveBtn">Save notification settings</button>
+                  <button class="btn" type="button" id="cfgTestAllBtn">Test all channels</button>
                 </div>
               </form>
             </section>

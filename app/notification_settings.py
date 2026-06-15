@@ -25,9 +25,18 @@ _FIELDS: dict[str, type] = {
     "alert_email_to": str,
     "email_alert_min_severity": str,
     "email_alert_cooldown_seconds": int,
+    "teams_webhook_url": str,
+    "teams_alert_min_severity": str,
+    "teams_alert_cooldown_seconds": int,
+    "discord_webhook_url": str,
+    "discord_alert_min_severity": str,
+    "discord_alert_cooldown_seconds": int,
+    "pagerduty_routing_key": str,
+    "pagerduty_alert_min_severity": str,
+    "pagerduty_alert_cooldown_seconds": int,
 }
 
-SECRET_FIELDS = {"smtp_password"}
+SECRET_FIELDS = {"smtp_password", "pagerduty_routing_key"}
 
 
 def _defaults() -> dict[str, Any]:

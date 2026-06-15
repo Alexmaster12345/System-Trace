@@ -42,7 +42,8 @@ ai-system-health-dashboard/
 | Host Monitor | `/host?id=<id>` | Per-host real-time charts (CPU, RAM, Disk, Network, GPU) |
 | Overview | `/overview` | System overview |
 | Inventory | `/inventory` | Asset/equipment tracking (rack, shelf, S/N) |
-| Configuration | `/configuration` | System configuration |
+| Configuration | `/configuration` | Alert notification settings (Slack, Email, Teams, Discord, PagerDuty) |
+| Info | `/info` | Read-only server configuration (sampling, anomaly detection, protocols, storage, auth) |
 | Hosts Management | `/hosts` | Discovered hosts and agent deployment |
 | System Logs | `/logs` | Filterable system event log |
 | User Management | `/users` | User accounts |
@@ -75,6 +76,16 @@ ai-system-health-dashboard/
 ![Host Monitor](docs/screenshots/12_host_monitor.png)
 
 ## Changelog
+
+### Jun 15, 2026
+
+#### Alert Notifications & Info Page
+- New `/configuration` page: admin-editable Slack, Email (SMTP), Microsoft Teams, Discord, and PagerDuty alert settings, persisted to `data/notification_settings.json` (no restart required)
+- New `/info` page: read-only server configuration (sampling, anomaly detection, protocols, storage, auth) — moved here from `/configuration`
+- New sidebar "Info" link added to all pages
+- New alert channels: Microsoft Teams (Incoming Webhook), Discord (channel webhook), and PagerDuty (Events API v2), each with its own minimum severity and cooldown
+- New `POST /api/admin/notifications/test-all` endpoint and "Test all channels" button — sends a test message to every configured channel at once
+- New per-channel test endpoints: `/api/admin/notifications/{teams,discord,pagerduty}` and `-test` variants
 
 ### Feb 22, 2026
 
@@ -159,6 +170,17 @@ ai-system-health-dashboard/
 - `GET /api/logs/host/{hostname}` — per-host log history
 - Stored in `data/system_logs.json`, rolling cap of 2000 entries
 
+### Alert Notifications (`/configuration`, admin only)
+- Editable Slack, Email (SMTP), Microsoft Teams, Discord, and PagerDuty alert settings — no restart required
+- Settings are persisted to `data/notification_settings.json`, overriding the `.env` defaults; secrets (SMTP password, PagerDuty routing key) are masked in the UI and API responses
+- Automatic alerts are sent for detected anomalies, gated per channel by a minimum severity (`info`/`warn`/`crit`) and a per-metric cooldown
+- API:
+	- `GET` / `PUT /api/admin/notifications/config` — read/update all channel settings (send `null` to reset a field to its env default)
+	- `POST /api/admin/notifications/{slack,email,teams,discord,pagerduty}` — send a custom message/alert on that channel
+	- `POST /api/admin/notifications/{slack,email,teams,discord,pagerduty}-test` — send a test message using current insights
+	- `POST /api/admin/notifications/test-all` — send a test message to every configured channel at once
+- Read-only server configuration (sampling, anomaly detection, protocols, storage, auth) moved to `/info`
+
 ## Quickstart
 
 ### 1) Create a virtualenv + install deps
@@ -199,6 +221,25 @@ SQLite persistence:
 
 - `METRICS_DB_PATH` (default: `data/metrics.db`) — set to an empty string to disable persistence
 - `SQLITE_RETENTION_SECONDS` (default: `86400`) — how long to keep samples in SQLite (set `0` to keep forever)
+
+Alert notifications (all optional — can also be managed at runtime via `/configuration`):
+
+- Slack:
+	- `SLACK_WEBHOOK_URL`, `SLACK_CHANNEL`
+	- `SLACK_ALERT_MIN_SEVERITY` (default: `crit`), `SLACK_ALERT_COOLDOWN_SECONDS` (default: `600`)
+- Email (SMTP):
+	- `SMTP_HOST`, `SMTP_PORT` (default: `587`), `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_USE_TLS` (default: `1`), `SMTP_FROM_ADDR`
+	- `ALERT_EMAIL_TO` (comma-separated recipients)
+	- `EMAIL_ALERT_MIN_SEVERITY` (default: `crit`), `EMAIL_ALERT_COOLDOWN_SECONDS` (default: `600`)
+- Microsoft Teams:
+	- `TEAMS_WEBHOOK_URL`
+	- `TEAMS_ALERT_MIN_SEVERITY` (default: `crit`), `TEAMS_ALERT_COOLDOWN_SECONDS` (default: `600`)
+- Discord:
+	- `DISCORD_WEBHOOK_URL`
+	- `DISCORD_ALERT_MIN_SEVERITY` (default: `crit`), `DISCORD_ALERT_COOLDOWN_SECONDS` (default: `600`)
+- PagerDuty (Events API v2):
+	- `PAGERDUTY_ROUTING_KEY`
+	- `PAGERDUTY_ALERT_MIN_SEVERITY` (default: `crit`), `PAGERDUTY_ALERT_COOLDOWN_SECONDS` (default: `600`)
 
 Example:
 

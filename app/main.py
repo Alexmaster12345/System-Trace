@@ -26,12 +26,21 @@ from .metrics import add_sample, collect_sample, history, latest
 from .models import HostCreate, InventoryItemCreate, ProtocolStatus
 from . import notification_settings
 from .notifications import (
+    discord_enabled,
     email_enabled,
+    pagerduty_enabled,
+    send_discord_message,
     send_email,
+    send_pagerduty_event,
     send_slack_message,
+    send_teams_message,
+    severity_meets_discord_threshold,
     severity_meets_email_threshold,
+    severity_meets_pagerduty_threshold,
     severity_meets_slack_threshold,
+    severity_meets_teams_threshold,
     slack_enabled,
+    teams_enabled,
 )
 from .storage import create_host as db_create_host
 from .storage import create_inventory_item as db_create_inventory_item
@@ -484,6 +493,145 @@ async def post_email_test(request: Request) -> Any:
     if not ok:
         return JSONResponse({"detail": "Failed to send email"}, status_code=502)
     return {"sent": True}
+
+
+@app.post("/api/admin/notifications/teams")
+async def post_teams_message(request: Request) -> Any:
+    """Send an arbitrary message to Microsoft Teams (admin only)."""
+    user = await _get_current_user(request)
+    if user is None or user.role != "admin":
+        return JSONResponse({"detail": "Forbidden"}, status_code=403)
+    if not teams_enabled():
+        return JSONResponse({"detail": "Teams is not configured (TEAMS_WEBHOOK_URL missing)"}, status_code=400)
+    body = await request.json()
+    text = str(body.get("text", "")).strip()
+    if not text:
+        return JSONResponse({"detail": "text is required"}, status_code=400)
+    ok = await asyncio.to_thread(send_teams_message, text)
+    if not ok:
+        return JSONResponse({"detail": "Failed to send Teams message"}, status_code=502)
+    return {"sent": True}
+
+
+@app.post("/api/admin/notifications/teams-test")
+async def post_teams_test(request: Request) -> Any:
+    """Send a test message + current insights to Teams (admin only)."""
+    user = await _get_current_user(request)
+    if user is None or user.role != "admin":
+        return JSONResponse({"detail": "Forbidden"}, status_code=403)
+    if not teams_enabled():
+        return JSONResponse({"detail": "Teams is not configured (TEAMS_WEBHOOK_URL missing)"}, status_code=400)
+    insights = compute_insights()
+    text = f"System-Trace test alert — {insights.summary}"
+    ok = await asyncio.to_thread(send_teams_message, text)
+    if not ok:
+        return JSONResponse({"detail": "Failed to send Teams message"}, status_code=502)
+    return {"sent": True}
+
+
+@app.post("/api/admin/notifications/discord")
+async def post_discord_message(request: Request) -> Any:
+    """Send an arbitrary message to Discord (admin only)."""
+    user = await _get_current_user(request)
+    if user is None or user.role != "admin":
+        return JSONResponse({"detail": "Forbidden"}, status_code=403)
+    if not discord_enabled():
+        return JSONResponse({"detail": "Discord is not configured (DISCORD_WEBHOOK_URL missing)"}, status_code=400)
+    body = await request.json()
+    text = str(body.get("text", "")).strip()
+    if not text:
+        return JSONResponse({"detail": "text is required"}, status_code=400)
+    ok = await asyncio.to_thread(send_discord_message, text)
+    if not ok:
+        return JSONResponse({"detail": "Failed to send Discord message"}, status_code=502)
+    return {"sent": True}
+
+
+@app.post("/api/admin/notifications/discord-test")
+async def post_discord_test(request: Request) -> Any:
+    """Send a test message + current insights to Discord (admin only)."""
+    user = await _get_current_user(request)
+    if user is None or user.role != "admin":
+        return JSONResponse({"detail": "Forbidden"}, status_code=403)
+    if not discord_enabled():
+        return JSONResponse({"detail": "Discord is not configured (DISCORD_WEBHOOK_URL missing)"}, status_code=400)
+    insights = compute_insights()
+    text = f":mag: System-Trace test alert — {insights.summary}"
+    ok = await asyncio.to_thread(send_discord_message, text)
+    if not ok:
+        return JSONResponse({"detail": "Failed to send Discord message"}, status_code=502)
+    return {"sent": True}
+
+
+@app.post("/api/admin/notifications/pagerduty")
+async def post_pagerduty_event(request: Request) -> Any:
+    """Trigger an arbitrary PagerDuty alert (admin only)."""
+    user = await _get_current_user(request)
+    if user is None or user.role != "admin":
+        return JSONResponse({"detail": "Forbidden"}, status_code=403)
+    if not pagerduty_enabled():
+        return JSONResponse({"detail": "PagerDuty is not configured (PAGERDUTY_ROUTING_KEY missing)"}, status_code=400)
+    body = await request.json()
+    summary = str(body.get("text", "")).strip()
+    if not summary:
+        return JSONResponse({"detail": "text is required"}, status_code=400)
+    severity = str(body.get("severity", "crit"))
+    ok = await asyncio.to_thread(send_pagerduty_event, summary, severity)
+    if not ok:
+        return JSONResponse({"detail": "Failed to send PagerDuty event"}, status_code=502)
+    return {"sent": True}
+
+
+@app.post("/api/admin/notifications/pagerduty-test")
+async def post_pagerduty_test(request: Request) -> Any:
+    """Trigger a test PagerDuty alert with current insights (admin only)."""
+    user = await _get_current_user(request)
+    if user is None or user.role != "admin":
+        return JSONResponse({"detail": "Forbidden"}, status_code=403)
+    if not pagerduty_enabled():
+        return JSONResponse({"detail": "PagerDuty is not configured (PAGERDUTY_ROUTING_KEY missing)"}, status_code=400)
+    insights = compute_insights()
+    ok = await asyncio.to_thread(
+        send_pagerduty_event, f"System-Trace test alert — {insights.summary}", "info"
+    )
+    if not ok:
+        return JSONResponse({"detail": "Failed to send PagerDuty event"}, status_code=502)
+    return {"sent": True}
+
+
+@app.post("/api/admin/notifications/test-all")
+async def post_test_all_channels(request: Request) -> Any:
+    """Send a test message to every configured alert channel (admin only).
+
+    Returns a per-channel result: each channel is either omitted (not configured)
+    or reported as `{"sent": true}` / `{"sent": false, "detail": "..."}`.
+    """
+    user = await _get_current_user(request)
+    if user is None or user.role != "admin":
+        return JSONResponse({"detail": "Forbidden"}, status_code=403)
+
+    insights = compute_insights()
+    results: dict[str, Any] = {}
+
+    if slack_enabled():
+        ok = await asyncio.to_thread(send_slack_message, f":mag: System-Trace test alert — {insights.summary}")
+        results["slack"] = {"sent": ok}
+    if email_enabled():
+        ok = await asyncio.to_thread(send_email, "System-Trace test alert", f"Test alert — {insights.summary}")
+        results["email"] = {"sent": ok}
+    if teams_enabled():
+        ok = await asyncio.to_thread(send_teams_message, f"System-Trace test alert — {insights.summary}")
+        results["teams"] = {"sent": ok}
+    if discord_enabled():
+        ok = await asyncio.to_thread(send_discord_message, f":mag: System-Trace test alert — {insights.summary}")
+        results["discord"] = {"sent": ok}
+    if pagerduty_enabled():
+        ok = await asyncio.to_thread(send_pagerduty_event, f"System-Trace test alert — {insights.summary}", "info")
+        results["pagerduty"] = {"sent": ok}
+
+    if not results:
+        return JSONResponse({"detail": "No alert channels are configured"}, status_code=400)
+    return {"results": results}
 
 
 @app.get("/api/me")
@@ -1354,16 +1502,25 @@ async def _host_checker_loop() -> None:
 
 _slack_alert_last_sent: dict[str, float] = {}
 _email_alert_last_sent: dict[str, float] = {}
+_teams_alert_last_sent: dict[str, float] = {}
+_discord_alert_last_sent: dict[str, float] = {}
+_pagerduty_alert_last_sent: dict[str, float] = {}
 
 
 async def _maybe_send_alerts(insights: Any) -> None:
-    if not slack_enabled() and not email_enabled():
+    if not (
+        slack_enabled()
+        or email_enabled()
+        or teams_enabled()
+        or discord_enabled()
+        or pagerduty_enabled()
+    ):
         return
     now = time.time()
     for anomaly in insights.anomalies:
         if slack_enabled() and severity_meets_slack_threshold(anomaly.severity):
             last_sent = _slack_alert_last_sent.get(anomaly.metric, 0.0)
-            if now - last_sent >= settings.slack_alert_cooldown_seconds:
+            if now - last_sent >= notification_settings.get_value("slack_alert_cooldown_seconds"):
                 _slack_alert_last_sent[anomaly.metric] = now
                 emoji = ":rotating_light:" if anomaly.severity == "crit" else ":warning:"
                 text = f"{emoji} System-Trace alert ({anomaly.severity}): {anomaly.message}"
@@ -1371,10 +1528,33 @@ async def _maybe_send_alerts(insights: Any) -> None:
 
         if email_enabled() and severity_meets_email_threshold(anomaly.severity):
             last_sent = _email_alert_last_sent.get(anomaly.metric, 0.0)
-            if now - last_sent >= settings.email_alert_cooldown_seconds:
+            if now - last_sent >= notification_settings.get_value("email_alert_cooldown_seconds"):
                 _email_alert_last_sent[anomaly.metric] = now
                 subject = f"System-Trace alert ({anomaly.severity}): {anomaly.metric}"
                 await asyncio.to_thread(send_email, subject, anomaly.message)
+
+        if teams_enabled() and severity_meets_teams_threshold(anomaly.severity):
+            last_sent = _teams_alert_last_sent.get(anomaly.metric, 0.0)
+            if now - last_sent >= notification_settings.get_value("teams_alert_cooldown_seconds"):
+                _teams_alert_last_sent[anomaly.metric] = now
+                text = f"System-Trace alert ({anomaly.severity}): {anomaly.message}"
+                await asyncio.to_thread(send_teams_message, text)
+
+        if discord_enabled() and severity_meets_discord_threshold(anomaly.severity):
+            last_sent = _discord_alert_last_sent.get(anomaly.metric, 0.0)
+            if now - last_sent >= notification_settings.get_value("discord_alert_cooldown_seconds"):
+                _discord_alert_last_sent[anomaly.metric] = now
+                emoji = ":rotating_light:" if anomaly.severity == "crit" else ":warning:"
+                text = f"{emoji} System-Trace alert ({anomaly.severity}): {anomaly.message}"
+                await asyncio.to_thread(send_discord_message, text)
+
+        if pagerduty_enabled() and severity_meets_pagerduty_threshold(anomaly.severity):
+            last_sent = _pagerduty_alert_last_sent.get(anomaly.metric, 0.0)
+            if now - last_sent >= notification_settings.get_value("pagerduty_alert_cooldown_seconds"):
+                _pagerduty_alert_last_sent[anomaly.metric] = now
+                await asyncio.to_thread(
+                    send_pagerduty_event, anomaly.message, anomaly.severity, f"system-trace:{anomaly.metric}"
+                )
 
 
 async def _sampler_loop() -> None:
