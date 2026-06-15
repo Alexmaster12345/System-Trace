@@ -4,6 +4,63 @@
    - WebSocket reconnect without accumulating timers
 */
 
+// ── Theme (dark/light) ──────────────────────────────────────────────────────
+const THEME_STORAGE_KEY = 'system-trace-theme';
+
+function getPreferredTheme() {
+  const urlTheme = new URLSearchParams(location.search).get('theme');
+  if (urlTheme) return urlTheme.toLowerCase();
+  try {
+    const stored = localStorage.getItem(THEME_STORAGE_KEY);
+    if (stored) return stored;
+  } catch (_) {
+    // ignore (e.g. storage disabled)
+  }
+  return 'midnight';
+}
+
+// Apply immediately (before paint) to avoid a flash of the wrong theme.
+document.documentElement.dataset.theme = getPreferredTheme();
+
+(function () {
+  function isLight(theme) {
+    return theme === 'light';
+  }
+
+  function updateToggleButton(btn, theme) {
+    if (!btn) return;
+    if (isLight(theme)) {
+      btn.innerHTML = '🌙 Dark mode';
+      btn.setAttribute('aria-label', 'Switch to dark theme');
+    } else {
+      btn.innerHTML = '☀️ Light mode';
+      btn.setAttribute('aria-label', 'Switch to light theme');
+    }
+  }
+
+  function initThemeToggle() {
+    const btn = document.getElementById('themeToggleBtn');
+    if (!btn) return;
+    updateToggleButton(btn, document.documentElement.dataset.theme);
+    btn.addEventListener('click', () => {
+      const next = isLight(document.documentElement.dataset.theme) ? 'midnight' : 'light';
+      document.documentElement.dataset.theme = next;
+      updateToggleButton(btn, next);
+      try {
+        localStorage.setItem(THEME_STORAGE_KEY, next);
+      } catch (_) {
+        // ignore
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initThemeToggle);
+  } else {
+    initThemeToggle();
+  }
+})();
+
 // ── Role-based sidebar visibility ─────────────────────────────────────────────
 (function () {
   function applyRoleSidebar(role) {
@@ -80,7 +137,7 @@
   function applyPrefs() {
     const q = new URLSearchParams(location.search);
 
-    const theme = (q.get('theme') || 'midnight').toLowerCase();
+    const theme = getPreferredTheme();
     const density = (q.get('density') || 'cozy').toLowerCase();
     const layout = (q.get('layout') || 'split').toLowerCase();
     const wallboard = q.get('wallboard') === '1' || q.get('wallboard') === 'true';

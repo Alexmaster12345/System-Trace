@@ -1631,6 +1631,23 @@ body.wallboard .hint { display: none; }
 .supportTicketBtn:hover {
   background: rgba(99, 102, 241, 0.2);
 }
+.themeToggleBtn {
+  display: block;
+  width: calc(100% - 24px);
+  margin: 12px auto 0;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-align: center;
+}
+.themeToggleBtn:hover {
+  background: var(--glass);
+}
 
 /* --- Enterprise header --- */
 .entHeader {
@@ -2408,6 +2425,14 @@ body {
   background: #3d63ff;
   border: 0;
   color: #f5f8ff;
+  font-size: 11px;
+  padding: 9px 12px;
+}
+
+.themeToggleBtn {
+  width: 100%;
+  margin: 0;
+  border-radius: 8px;
   font-size: 11px;
   padding: 9px 12px;
 }

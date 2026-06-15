@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>System Trace · Dashboard</title>
-    <link rel="stylesheet" href="/static/assets/dashboard.css?v=20260310_1" />
-    <script defer src="/static/assets/dashboard.js?v=20260310_1"></script>
+    <link rel="stylesheet" href="/static/assets/dashboard.css?v=20260615_1" />
+    <script defer src="/static/assets/dashboard.js?v=20260615_1"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
   </head>
   <body class="sidebarAutoHide">
@@ -42,6 +42,7 @@
         </nav>
 
         <div class="sideBottom" aria-label="Secondary">
+          <button class="themeToggleBtn" id="themeToggleBtn" type="button" aria-label="Toggle light/dark theme"></button>
           <button class="supportTicketBtn" type="button">🎫 Support Ticket</button>
           <form class="sideLogout" method="post" action="/logout">
             <button class="sideItem sideBtn" type="submit" data-action="logout"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Sign out</button>

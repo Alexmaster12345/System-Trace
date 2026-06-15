@@ -4,9 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>System Trace · Host Management</title>
-    <link rel="stylesheet" href="/static/assets/dashboard.css?v=20260211_2" />
+    <link rel="stylesheet" href="/static/assets/dashboard.css?v=20260615_1" />
     <link rel="stylesheet" href="/static/assets/inventory.css?v=20260221_5" />
-    <script defer src="/static/assets/dashboard.js?v=20260211_18"></script>
+    <script defer src="/static/assets/dashboard.js?v=20260615_1"></script>
     <style>
     /* Host card styles (rendered by JS) */
     .host-card { background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:16px 18px; transition:border-color 0.15s; }
@@ -95,6 +95,7 @@
         </nav>
 
         <div class="sideBottom" aria-label="Secondary">
+          <button class="themeToggleBtn" id="themeToggleBtn" type="button" aria-label="Toggle light/dark theme"></button>
           <button class="supportTicketBtn" type="button">🎫 Support Ticket</button>
           <form class="sideLogout" method="post" action="/logout">
             <button class="sideItem sideBtn" type="submit" data-action="logout"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Sign out</button>
