@@ -51,6 +51,21 @@ ai-system-health-dashboard/
 
 ## Changelog
 
+### Aug 8, 2026 (later)
+
+#### Agent Install Fixes
+- Fixed a shell-escaping bug in the agent deployer: it escaped single quotes as if embedding into a quoted shell string, but the content is actually placed inside a `<<'AGENTEOF'` heredoc, which needs zero escaping. The extra escaping corrupted the deployed Python (e.g. `'nvidia-smi'` → `'\''nvidia-smi'\''`), causing a `SyntaxError` crash loop on every installed agent
+- Documented that the installer's `pip install psutil requests` step fails silently on minimal Rocky/RHEL hosts (no `pip` binary for system Python by default) — install `python3-pip python3-psutil python3-requests` via `dnf` first on those distros
+
+#### Hosts Page Polish
+- Host list and Add-host panel are now a centered, fixed-width block instead of stretching full-bleed on wide screens
+- Host table scrolls vertically after ~5 rows (sticky header) with a "Show all / Show less" toggle instead of growing the page indefinitely
+- Removed a column width cap that was forcing unnecessary horizontal scroll
+- Type column no longer truncates with an ellipsis
+
+#### Navigation Bug
+- The "Logs" and "Info" sidebar links were intercepted by a client-side router with no case for either action, silently blocking navigation and logging "not implemented yet" instead of opening the page — both now navigate correctly
+
 ### Aug 8, 2026
 
 #### UI Redesign — "Obsidian Command" theme

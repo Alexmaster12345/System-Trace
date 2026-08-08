@@ -449,6 +449,7 @@ body[data-view="maps"] #mapsView { display: block; }
   grid-template-columns: 340px 1fr;
   gap: calc(var(--grid-gap) * 0.7);
   width: 100%;
+  max-width: 1500px;
   margin: 0 auto;
 }
 
@@ -531,7 +532,22 @@ body[data-view="maps"] #mapsView { display: block; }
 
 .hostsEmpty { padding: 6px 2px 8px; }
 
-.hostsTableWrap { overflow: auto; border-radius: 12px; }
+.hostsTableWrap {
+  overflow: auto;
+  border-radius: 12px;
+  max-height: 260px;
+}
+
+.hostsTableWrap.hostsTableWrapExpanded {
+  max-height: none;
+}
+
+.hostsTable thead th {
+  position: sticky;
+  top: 0;
+  background: var(--enterprise-panel, #1e293b);
+  z-index: 1;
+}
 
 .hostsTable {
   width: 100%;

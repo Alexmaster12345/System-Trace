@@ -2052,6 +2052,28 @@ document.documentElement.dataset.theme = getPreferredTheme();
           return;
         }
 
+        if (action === 'info') {
+          e.preventDefault();
+          setOpen(false);
+          try {
+            location.href = '/info';
+          } catch (_) {
+            // ignore
+          }
+          return;
+        }
+
+        if (action === 'logs') {
+          e.preventDefault();
+          setOpen(false);
+          try {
+            location.href = '/logs';
+          } catch (_) {
+            // ignore
+          }
+          return;
+        }
+
         if (action === 'users') {
           e.preventDefault();
           setOpen(false);
@@ -3059,6 +3081,14 @@ document.documentElement.dataset.theme = getPreferredTheme();
     init();
   }
 })();
+
+window.toggleHostsExpand = function() {
+  const wrap = document.getElementById('hostsTableWrap');
+  const btn = document.getElementById('hostsExpandBtn');
+  if (!wrap || !btn) return;
+  const expanded = wrap.classList.toggle('hostsTableWrapExpanded');
+  btn.textContent = expanded ? '⤡ Show less' : '⤢ Show all';
+};
 
 window.startAutoDiscovery = async function() {
   const btns = document.querySelectorAll('#hostsDiscoverBtn, #mapsDiscoverBtn');

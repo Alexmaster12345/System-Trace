@@ -912,12 +912,16 @@ async def api_admin_hosts_install_agent(host_id: int, payload: dict) -> Any:
     if not agent_src:
         return JSONResponse({"detail": "Agent file not found on server"}, status_code=500)
 
-    # Read agent file content to embed directly (avoids heredoc issues with $)
+    # Read agent file content to embed directly. The heredoc below uses a
+    # quoted delimiter (<< 'AGENTEOF'), so the shell treats its body as
+    # completely literal text — no escaping of quotes/$/backticks needed
+    # (and doing so, as a previous version of this code did, corrupts any
+    # single-quote characters in the Python source, e.g. inside string
+    # literals like 'nvidia-smi', causing a SyntaxError on the target host).
     try:
         with open(agent_src, 'r') as f:
             agent_content = f.read()
-        # Escape single quotes for safe embedding
-        agent_content_escaped = agent_content.replace("'", "'\\''")
+        agent_content_escaped = agent_content
     except Exception as e:
         return JSONResponse({"detail": f"Failed to read agent file: {e}"}, status_code=500)
 
