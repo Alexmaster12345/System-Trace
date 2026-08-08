@@ -1027,6 +1027,8 @@ document.documentElement.dataset.theme = getPreferredTheme();
     document.getElementById('editHostModalAddress').value = h.address || '';
     document.getElementById('editHostModalType').value = h.type || '';
     document.getElementById('editHostModalNotes').value = h.notes || '';
+    const tags = Array.isArray(h.tags) ? h.tags.map((t) => String(t)) : [];
+    document.getElementById('editHostModalTags').value = tags.join(', ');
     const disabledChecks = Array.isArray(h.disabled_checks) ? h.disabled_checks.map((x) => String(x).toLowerCase()) : [];
     document.getElementById('editHostModalDisableSsh').checked = disabledChecks.includes('ssh');
     document.getElementById('editHostModalDisableSnmp').checked = disabledChecks.includes('snmp');
@@ -1051,6 +1053,30 @@ document.documentElement.dataset.theme = getPreferredTheme();
     }
   });
 
+  // Tags field: click to show a dropdown list of common tags.
+  document.addEventListener('click', (e) => {
+    const tagsInput = document.getElementById('editHostModalTags');
+    const tagsList = document.getElementById('editHostModalTagsList');
+    if (!tagsInput || !tagsList) return;
+
+    const item = e.target && e.target.closest ? e.target.closest('.tagsDropdownItem') : null;
+    if (item && tagsList.contains(item)) {
+      const picked = item.getAttribute('data-tag');
+      const current = tagsInput.value.split(',').map((t) => t.trim()).filter(Boolean);
+      if (!current.includes(picked)) current.push(picked);
+      tagsInput.value = current.join(', ');
+      tagsList.style.display = 'none';
+      return;
+    }
+
+    if (e.target === tagsInput) {
+      tagsList.style.display = 'block';
+      return;
+    }
+
+    tagsList.style.display = 'none';
+  });
+
   window.closeEditHostModal = function() {
     const modal = document.getElementById('editHostModal');
     if (modal) modal.style.display = 'none';
@@ -1062,6 +1088,8 @@ document.documentElement.dataset.theme = getPreferredTheme();
     const address = document.getElementById('editHostModalAddress').value.trim();
     const type = document.getElementById('editHostModalType').value.trim();
     const notes = document.getElementById('editHostModalNotes').value.trim();
+    const tagsRaw = document.getElementById('editHostModalTags').value.trim();
+    const tags = tagsRaw ? tagsRaw.split(',').map((t) => t.trim()).filter(Boolean) : [];
     const disabledChecks = [];
     if (document.getElementById('editHostModalDisableSsh').checked) disabledChecks.push('ssh');
     if (document.getElementById('editHostModalDisableSnmp').checked) disabledChecks.push('snmp');
@@ -1092,7 +1120,7 @@ document.documentElement.dataset.theme = getPreferredTheme();
       await fetchJson(`/api/admin/hosts/${encodeURIComponent(id)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, address, type: type || null, tags: [], notes: notes || null, disabled_checks: disabledChecks, agent_required: agentRequired })
+        body: JSON.stringify({ name, address, type: type || null, tags, notes: notes || null, disabled_checks: disabledChecks, agent_required: agentRequired })
       });
 
       if (wantsInstall) {

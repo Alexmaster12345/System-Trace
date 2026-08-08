@@ -1449,6 +1449,44 @@ header {
   resize: vertical;
 }
 
+.modalFieldDropdownStyle {
+  border-radius: 999px !important;
+  background-color: rgba(0,0,0,0.22);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%2394a3b8' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 34px !important;
+}
+
+.tagsDropdownList {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 20;
+  background: var(--enterprise-panel, #1e293b);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+  padding: 6px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.tagsDropdownItem {
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.tagsDropdownItem:hover,
+.tagsDropdownItem.active {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  color: var(--accent);
+}
+
 .modalMsg {
   font-size: 13px;
   margin-bottom: 10px;

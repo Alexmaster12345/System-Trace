@@ -6,8 +6,8 @@
     <title>System Trace · Dashboard</title>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/static/assets/dashboard.css?v=20260808_obsidian26" />
-    <script defer src="/static/assets/dashboard.js?v=20260808_pro13"></script>
+<link rel="stylesheet" href="/static/assets/dashboard.css?v=20260808_obsidian28" />
+    <script defer src="/static/assets/dashboard.js?v=20260808_pro17"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
   </head>
   <body>
@@ -454,6 +454,23 @@
               <div class="modalField">
                 <label>Notes</label>
                 <textarea id="editHostModalNotes" rows="3" placeholder="Optional notes…"></textarea>
+              </div>
+              <div class="modalField" style="position:relative;">
+                <label>Tags</label>
+                <input id="editHostModalTags" class="modalFieldDropdownStyle" type="text" placeholder="—" autocomplete="off">
+                <div id="editHostModalTagsList" class="tagsDropdownList" style="display:none;">
+                  <div class="tagsDropdownItem" data-tag="Access Point">Access Point</div>
+                  <div class="tagsDropdownItem" data-tag="Switch">Switch</div>
+                  <div class="tagsDropdownItem" data-tag="VM">VM</div>
+                  <div class="tagsDropdownItem" data-tag="Router">Router</div>
+                  <div class="tagsDropdownItem" data-tag="PDU">PDU</div>
+                  <div class="tagsDropdownItem" data-tag="Server">Server</div>
+                  <div class="tagsDropdownItem" data-tag="Storage">Storage</div>
+                  <div class="tagsDropdownItem" data-tag="Firewall">Firewall</div>
+                  <div class="tagsDropdownItem" data-tag="UPS">UPS</div>
+                  <div class="tagsDropdownItem" data-tag="Data center">Data center</div>
+                  <div class="tagsDropdownItem" data-tag="Labs">Labs</div>
+                </div>
               </div>
               <div class="modalField">
                 <label>Checks</label>

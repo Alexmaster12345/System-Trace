@@ -51,6 +51,14 @@ ai-system-health-dashboard/
 
 ## Changelog
 
+### Aug 8, 2026 (evening)
+
+#### Hosts Editing: Tags & Navigation
+- Edit Host modal now has a proper Tags field: free-text entry (comma-separated) with a click-to-open suggestion list (Access Point, Switch, VM, Router, PDU, Server, Storage, Firewall, UPS, Data center, Labs)
+- Fixed a real data-loss bug: the Edit Host save action always sent `tags: []`, silently wiping any tags a host had on every edit — tags are now read from the field and actually persisted
+- Fixed the "Logs" and "Info" sidebar links: the client-side router had no case for either action and silently blocked navigation with a "not implemented yet" no-op instead of opening the page
+- Host list table: scrolls after ~5 rows with a sticky header and a "Show all / Show less" toggle; centered layout instead of stretching full-bleed; removed a width cap that forced unnecessary horizontal scrolling; Type column no longer truncates with an ellipsis
+
 ### Aug 8, 2026 (later)
 
 #### Agent Install Fixes
