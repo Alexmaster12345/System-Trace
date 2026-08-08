@@ -104,7 +104,7 @@
           <button class="actionBtn edit" onclick="editUser(${user.id})" title="Edit">✏️ Edit</button>
         </td>
         <td style="text-align:center;">
-          <button class="actionBtn edit" onclick="openResetPasswordModal(${user.id})" title="Reset Password" style="background:rgba(255,152,0,0.15);border-color:rgba(255,152,0,0.4);color:#ffb74d;">🔑 Reset</button>
+          <button class="actionBtn edit" onclick="openResetPasswordModal(${user.id})" title="Reset Password" style="background:color-mix(in srgb, var(--warn) 15%, transparent);border-color:color-mix(in srgb, var(--warn) 40%, transparent);color:var(--warn);">🔑 Reset</button>
         </td>
         <td style="text-align:center;">
           <button class="actionBtn delete" onclick="deleteUser(${user.id})" title="Delete">🗑️ Delete</button>

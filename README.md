@@ -77,6 +77,29 @@ ai-system-health-dashboard/
 
 ## Changelog
 
+### Aug 8, 2026
+
+#### UI Redesign — "Obsidian Command" theme
+- Full visual redesign of every page: dark graphite palette (`#0F172A` / `#1E293B` panels), refined blue accent, Hanken Grotesk headings, Inter body text, JetBrains Mono for all metrics/data tables
+- Full-page background artwork layer (subtle, low-opacity, behind all cards) on Dashboard, Hosts, Network, Inventory, Configuration, Info, Logs, Users, and User Groups
+- Fixed several pre-existing layout bugs uncovered during the redesign: a missing CSS closing brace that silently scoped ~2,600 lines of the stylesheet to desktop-only widths, a `-200px` position hack that broke the Hosts page layout, and multiple near-transparent card backgrounds that let background art wash out table content
+- Persistent (always-visible) sidebar with a working slide-in/out toggle on every view, including Hosts/Problems/Maps
+
+#### Per-Host Check Control
+- Hosts can now have individual protocol checks (SSH/SNMP/NTP) disabled — the 15-second background checker actually skips disabled checks rather than just hiding them in the UI
+- Hosts can be marked "agent not required" (e.g. routers, switches) to suppress the "Agent Not Installed" warning
+- New `disabled_checks` and `agent_required` columns on the `hosts` table (auto-migrated for existing databases)
+- Both controlled from the Edit Host modal
+
+#### Install Agent, consolidated
+- The separate "Install Agent" button/modal was merged into the Edit Host modal as a checkbox that reveals SSH credential fields inline — one modal for all host configuration instead of two
+- Fixed the agent installer pointing at a nonexistent hardcoded path (`/opt/system-trace-agent/ashd_agent.py`); it now resolves to the per-distro scripts already shipped under `agents/`
+
+#### Bug fixes
+- `refreshHosts()` and `startAutoDiscovery()` weren't wired to the page (scoped inside a closure, unreachable from inline `onclick` handlers) — Refresh button and post-discovery table refresh now work
+- "View Full Console" button on the dashboard's System Events card had no click handler at all — now navigates to `/logs`
+- System Events (host-check failures/recoveries) now also get written to the persistent Logs page — previously the two were disconnected data stores
+
 ### Jun 15, 2026
 
 #### Alert Notifications & Info Page

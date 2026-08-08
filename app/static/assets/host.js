@@ -319,14 +319,14 @@
     if (badge) {
       if (data.online) {
         badge.textContent = '● Agent Online';
-        badge.style.color = '#4caf50';
-        badge.style.background = 'rgba(76,175,80,0.12)';
-        badge.style.borderColor = 'rgba(76,175,80,0.35)';
+        badge.style.color = 'var(--ok)';
+        badge.style.background = 'color-mix(in srgb, var(--ok) 12%, transparent)';
+        badge.style.borderColor = 'color-mix(in srgb, var(--ok) 35%, transparent)';
       } else {
         badge.textContent = '● Agent Offline';
-        badge.style.color = '#9e9e9e';
-        badge.style.background = 'rgba(158,158,158,0.10)';
-        badge.style.borderColor = 'rgba(158,158,158,0.30)';
+        badge.style.color = 'var(--neutral)';
+        badge.style.background = 'color-mix(in srgb, var(--neutral) 10%, transparent)';
+        badge.style.borderColor = 'color-mix(in srgb, var(--neutral) 30%, transparent)';
       }
     }
     const lsEl = $$('hLastSeen');
@@ -396,7 +396,7 @@
     if (titleEl) {
       const hasCrit = problems.some(p => p.level === 'crit');
       titleEl.textContent = hasCrit ? '⚠ Critical Problems Detected' : '⚠ Warnings Detected';
-      titleEl.style.color = hasCrit ? '#f44336' : '#ff9800';
+      titleEl.style.color = hasCrit ? 'var(--crit)' : 'var(--warn)';
     }
 
     // Report to backend (deduplicated — only when problem set changes)
@@ -496,9 +496,9 @@
     const badge = $$('hmAgentBadge');
     if (badge) {
       badge.textContent = '✕ No Agent';
-      badge.style.color = '#f44336';
-      badge.style.background = 'rgba(244,67,54,0.10)';
-      badge.style.borderColor = 'rgba(244,67,54,0.30)';
+      badge.style.color = 'var(--crit)';
+      badge.style.background = 'color-mix(in srgb, var(--crit) 10%, transparent)';
+      badge.style.borderColor = 'color-mix(in srgb, var(--crit) 30%, transparent)';
     }
   }
 

@@ -4,11 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>System Trace · Dashboard</title>
-    <link rel="stylesheet" href="/static/assets/dashboard.css?v=20260615_1" />
-    <script defer src="/static/assets/dashboard.js?v=20260615_1"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/static/assets/dashboard.css?v=20260808_obsidian24" />
+    <script defer src="/static/assets/dashboard.js?v=20260808_pro11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
   </head>
-  <body class="sidebarAutoHide">
+  <body>
     <div class="appShell" id="appShell">
       <aside class="sidebar" id="sidebar" aria-label="Navigation">
         <div class="sideTop">
@@ -27,7 +29,7 @@
         <nav class="sideNav" id="sideNav" aria-label="Main">
           <div class="sideGroup">
             <a class="sideItem" href="/" data-action="dashboard" data-label="Dashboard" aria-current="page"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span> Dashboard</a>
-            <a class="sideItem" href="/hosts" data-action="hosts" data-label="Servers"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="5" rx="2"/><rect x="2" y="11" width="20" height="5" rx="2"/><circle cx="6" cy="5.5" r="1" fill="currentColor"/><circle cx="6" cy="13.5" r="1" fill="currentColor"/></svg></span> Servers</a>
+            <a class="sideItem" href="/hosts" data-action="hosts" data-label="Hosts"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="5" rx="2"/><rect x="2" y="11" width="20" height="5" rx="2"/><circle cx="6" cy="5.5" r="1" fill="currentColor"/><circle cx="6" cy="13.5" r="1" fill="currentColor"/></svg></span> Hosts</a>
             <a class="sideItem" href="/maps" data-action="maps" data-label="Network"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span> Network</a>
             <a class="sideItem" href="/inventory" data-action="inventory" data-label="Inventory"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span> Inventory</a>
             <a class="sideItem" href="/configuration" data-action="configuration" data-label="Configuration"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span> Configuration</a>
@@ -47,10 +49,12 @@
           <form class="sideLogout" method="post" action="/logout">
             <button class="sideItem sideBtn" type="submit" data-action="logout"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Sign out</button>
           </form>
+          <div class="sysStatusPill"><span class="sysStatusDot"></span>System Status: Optimal</div>
         </div>
       </aside>
 
       <div class="content" id="content">
+        <div class="dashBgArt" aria-hidden="true"></div>
         <div class="frame">
           <div class="hud">
             <header class="entHeader">
@@ -65,7 +69,7 @@
                   <span class="headerSearchIcon" aria-hidden="true">⌕</span>
                   <input type="text" placeholder="Search infrastructure..." class="headerSearchInput" />
                 </div>
-                <button class="notifBtn" type="button">🔔<span class="notifBadge">3</span></button>
+                <button class="notifBtn" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notifBadge">3</span></button>
                 <div class="userProfile">
                   <div class="avatarCircle" id="dashAvatar">—</div>
                   <div class="userMeta">
@@ -102,7 +106,7 @@
                 </div>
                 <div class="kpiIcon kpiUptime"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
               </div>
-              <div class="kpiCard">
+              <div class="kpiCard kpiWarningCard">
                 <div class="kpiMeta">
                   <div class="kpiEyebrow">Active Warnings</div>
                   <div class="kpiInfo"><div class="kpiValue" id="kpiWarnings">12</div><div class="kpiTrend warning">2 urgent tickets</div></div>
@@ -139,7 +143,7 @@
                     <div class="memDonutWrap">
                       <svg class="memDonut" viewBox="0 0 200 200">
                         <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="16"/>
-                        <circle id="memArc" cx="100" cy="100" r="80" fill="none" stroke="#6366f1" stroke-width="16" stroke-linecap="round" stroke-dasharray="502.65" stroke-dashoffset="140.74" transform="rotate(-90 100 100)" style="transition:stroke-dashoffset .6s ease;"/>
+                        <circle id="memArc" cx="100" cy="100" r="80" fill="none" stroke="#4c8dff" stroke-width="16" stroke-linecap="round" stroke-dasharray="502.65" stroke-dashoffset="140.74" transform="rotate(-90 100 100)" style="transition:stroke-dashoffset .6s ease; filter: drop-shadow(0 0 8px rgba(76,141,255,0.5));"/>
                       </svg>
                       <div class="memCenter">
                         <span class="memPct" id="memPctEnt">72%</span>
@@ -183,7 +187,7 @@
                 <div class="dashCard eventsCard">
                   <div class="cardHeader"><h3>System Events</h3><span class="liveBadge">● LIVE</span></div>
                   <div class="sysEventsList" id="sysEventsList"></div>
-                  <button class="consoleBtn" type="button">View Full Console</button>
+                  <button class="consoleBtn" type="button" onclick="window.location.href='/logs'">View Full Console</button>
                 </div>
               </div>
             </div>
@@ -280,9 +284,14 @@
           <!-- Problems page (single-page view, toggled by dashboard.js via location.hash) -->
           <section class="problemsView" id="problemsView" aria-label="Problems">
             <div class="hostsHeader">
-              <div>
-                <div class="hostsTitle">Problems</div>
-                <div class="hostsSub muted">Current issues and recent error events for monitored hosts.</div>
+              <div style="display:flex; align-items:center; gap:10px;">
+                <button class="sideToggle" type="button" aria-label="Toggle menu" title="Menu">
+                   <span aria-hidden="true">≡</span>
+                </button>
+                <div>
+                  <div class="hostsTitle">Problems</div>
+                  <div class="hostsSub muted">Current issues and recent error events for monitored hosts.</div>
+                </div>
               </div>
               <div class="mapsToolbar" role="toolbar" aria-label="Problems toolbar">
                 <label class="mapsSelect">
@@ -334,9 +343,14 @@
           <!-- Hosts page (single-page view, toggled by dashboard.js via location.hash) -->
           <section class="hostsView" id="hostsView" aria-label="Hosts">
             <div class="hostsHeader">
-              <div>
-                <div class="hostsTitle">Hosts</div>
-                <div class="hostsSub muted">Add and manage monitored hosts inventory (admin-only changes).</div>
+              <div style="display:flex; align-items:center; gap:10px;">
+                <button class="sideToggle" type="button" aria-label="Toggle menu" title="Menu">
+                   <span aria-hidden="true">≡</span>
+                </button>
+                <div>
+                  <div class="hostsTitle">Hosts</div>
+                  <div class="hostsSub muted">Add and manage monitored hosts inventory (admin-only changes).</div>
+                </div>
               </div>
             </div>
 
@@ -419,57 +433,58 @@
           </section>
 
           <!-- Install Agent Modal -->
-          <div id="installAgentModal" onclick="if(event.target===this)closeInstallAgentModal()" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
-            <div style="background:#1e1e2e; border:1px solid #444; border-radius:10px; padding:30px; width:440px; max-width:95vw; box-shadow:0 8px 32px rgba(0,0,0,0.5);" onclick="event.stopPropagation()">
-              <h2 style="margin:0 0 6px 0; color:#e0e0e0;">⚙ Install Agent</h2>
-              <div id="installAgentHostName" style="color:#aaa; font-size:13px; margin-bottom:20px;"></div>
-              <input type="hidden" id="installAgentHostId">
-              <div style="margin-bottom:14px;">
-                <label style="display:block; color:#aaa; margin-bottom:5px; font-size:13px;">SSH Username</label>
-                <input id="installAgentUser" type="text" style="width:100%; padding:8px 10px; border-radius:5px; border:1px solid #555; background:#2a2a3e; color:#e0e0e0; font-size:14px; box-sizing:border-box;" placeholder="root">
-              </div>
-              <div style="margin-bottom:14px;">
-                <label style="display:block; color:#aaa; margin-bottom:5px; font-size:13px;">SSH Password</label>
-                <input id="installAgentPassword" type="password" style="width:100%; padding:8px 10px; border-radius:5px; border:1px solid #555; background:#2a2a3e; color:#e0e0e0; font-size:14px; box-sizing:border-box;" placeholder="Enter SSH password">
-              </div>
-              <div style="margin-bottom:20px;">
-                <label style="display:block; color:#aaa; margin-bottom:5px; font-size:13px;">SSH Port</label>
-                <input id="installAgentPort" type="number" style="width:100%; padding:8px 10px; border-radius:5px; border:1px solid #555; background:#2a2a3e; color:#e0e0e0; font-size:14px; box-sizing:border-box;" placeholder="22" value="22">
-              </div>
-              <div id="installAgentError" style="color:#ff6b6b; font-size:13px; margin-bottom:10px; display:none;"></div>
-              <div id="installAgentSuccess" style="color:#4caf50; font-size:13px; margin-bottom:10px; display:none;"></div>
-              <div style="display:flex; gap:10px; justify-content:flex-end;">
-                <button onclick="closeInstallAgentModal()" style="padding:9px 18px; border-radius:5px; border:1px solid #555; background:#333; color:#ccc; cursor:pointer; font-size:14px;">Cancel</button>
-                <button id="installAgentRunBtn" onclick="runInstallAgent()" style="padding:9px 18px; border-radius:5px; border:none; background:#28a745; color:white; cursor:pointer; font-size:14px; font-weight:600;">⚙ Install Agent</button>
-              </div>
-            </div>
-          </div>
-
           <!-- Edit Host Modal -->
-          <div id="editHostModal" onclick="if(event.target===this)closeEditHostModal()" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
-            <div style="background:#1e1e2e; border:1px solid #444; border-radius:10px; padding:30px; width:420px; max-width:95vw; box-shadow:0 8px 32px rgba(0,0,0,0.5);" onclick="event.stopPropagation()">
-              <h2 style="margin:0 0 20px 0; color:#e0e0e0;">✏️ Edit Host</h2>
+          <div id="editHostModal" onclick="if(event.target===this)closeEditHostModal()" class="modalOverlay" style="display:none;">
+            <div class="modalCard" onclick="event.stopPropagation()">
+              <h2 style="margin-bottom:20px;">✏️ Edit Host</h2>
               <input type="hidden" id="editHostModalId">
-              <div style="margin-bottom:14px;">
-                <label style="display:block; color:#aaa; margin-bottom:5px; font-size:13px;">Display Name</label>
-                <input id="editHostModalName" type="text" style="width:100%; padding:8px 10px; border-radius:5px; border:1px solid #555; background:#2a2a3e; color:#e0e0e0; font-size:14px; box-sizing:border-box;" placeholder="e.g. Web Server 01">
+              <div class="modalField">
+                <label>Display Name</label>
+                <input id="editHostModalName" type="text" placeholder="e.g. Web Server 01">
               </div>
-              <div style="margin-bottom:14px;">
-                <label style="display:block; color:#aaa; margin-bottom:5px; font-size:13px;">IP Address / Hostname</label>
-                <input id="editHostModalAddress" type="text" style="width:100%; padding:8px 10px; border-radius:5px; border:1px solid #555; background:#2a2a3e; color:#e0e0e0; font-size:14px; box-sizing:border-box;" placeholder="e.g. 192.168.1.10">
+              <div class="modalField">
+                <label>IP Address / Hostname</label>
+                <input id="editHostModalAddress" type="text" placeholder="e.g. 192.168.1.10">
               </div>
-              <div style="margin-bottom:14px;">
-                <label style="display:block; color:#aaa; margin-bottom:5px; font-size:13px;">Type</label>
-                <input id="editHostModalType" type="text" list="hostTypeList" style="width:100%; padding:8px 10px; border-radius:5px; border:1px solid #555; background:#2a2a3e; color:#e0e0e0; font-size:14px; box-sizing:border-box;" placeholder="Linux / Windows / Router…">
+              <div class="modalField">
+                <label>Type</label>
+                <input id="editHostModalType" type="text" list="hostTypeList" placeholder="Linux / Windows / Router…">
               </div>
-              <div style="margin-bottom:20px;">
-                <label style="display:block; color:#aaa; margin-bottom:5px; font-size:13px;">Notes</label>
-                <textarea id="editHostModalNotes" rows="3" style="width:100%; padding:8px 10px; border-radius:5px; border:1px solid #555; background:#2a2a3e; color:#e0e0e0; font-size:14px; box-sizing:border-box; resize:vertical;" placeholder="Optional notes…"></textarea>
+              <div class="modalField">
+                <label>Notes</label>
+                <textarea id="editHostModalNotes" rows="3" placeholder="Optional notes…"></textarea>
               </div>
-              <div id="editHostModalError" style="color:#ff6b6b; font-size:13px; margin-bottom:10px; display:none;"></div>
-              <div style="display:flex; gap:10px; justify-content:flex-end;">
-                <button onclick="closeEditHostModal()" style="padding:9px 18px; border-radius:5px; border:1px solid #555; background:#333; color:#ccc; cursor:pointer; font-size:14px;">Cancel</button>
-                <button id="editHostModalSaveBtn" onclick="saveEditHost()" style="padding:9px 18px; border-radius:5px; border:none; background:#007bff; color:white; cursor:pointer; font-size:14px; font-weight:600;">💾 Save</button>
+              <div class="modalField">
+                <label>Checks</label>
+                <div class="modalCheckRow"><label><input type="checkbox" id="editHostModalDisableSsh"> Disable SSH check</label></div>
+                <div class="modalCheckRow"><label><input type="checkbox" id="editHostModalDisableSnmp"> Disable SNMP check</label></div>
+                <div class="modalCheckRow"><label><input type="checkbox" id="editHostModalDisableNtp"> Disable NTP check</label></div>
+              </div>
+              <div class="modalField">
+                <div class="modalCheckRow"><label><input type="checkbox" id="editHostModalAgentNotRequired"> Agent not required for this host</label></div>
+              </div>
+              <div class="modalField">
+                <div class="modalCheckRow"><label><input type="checkbox" id="editHostModalInstallAgent"> ⚙ Install monitoring agent (SSH)</label></div>
+                <div id="editHostModalAgentFields" style="display:none; margin-top:8px; gap:8px;">
+                  <div class="modalField">
+                    <label>SSH Username</label>
+                    <input id="editHostModalSshUser" type="text" placeholder="root">
+                  </div>
+                  <div class="modalField">
+                    <label>SSH Password</label>
+                    <input id="editHostModalSshPassword" type="password" placeholder="Enter SSH password">
+                  </div>
+                  <div class="modalField">
+                    <label>SSH Port</label>
+                    <input id="editHostModalSshPort" type="number" placeholder="22" value="22">
+                  </div>
+                </div>
+              </div>
+              <div id="editHostModalError" class="modalMsg error"></div>
+              <div id="editHostModalAgentSuccess" class="modalMsg success" style="display:none;"></div>
+              <div class="modalActions">
+                <button class="btn secondary" onclick="closeEditHostModal()">Cancel</button>
+                <button id="editHostModalSaveBtn" class="btn primary" onclick="saveEditHost()">💾 Save</button>
               </div>
             </div>
           </div>
@@ -477,9 +492,14 @@
           <!-- Maps page (single-page view, toggled by dashboard.js via location.hash) -->
           <section class="mapsView" id="mapsView" aria-label="Maps">
             <div class="mapsHeader">
-              <div>
-                <div class="mapsTitle">Maps</div>
-                <div class="mapsSub muted">Topology view based on added hosts.</div>
+              <div style="display:flex; align-items:center; gap:10px;">
+                <button class="sideToggle" type="button" aria-label="Toggle menu" title="Menu">
+                   <span aria-hidden="true">≡</span>
+                </button>
+                <div>
+                  <div class="mapsTitle">Maps</div>
+                  <div class="mapsSub muted">Topology view based on added hosts.</div>
+                </div>
               </div>
 
               <div class="mapsToolbar" role="toolbar" aria-label="Maps toolbar">

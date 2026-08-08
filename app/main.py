@@ -898,8 +898,18 @@ async def api_admin_hosts_install_agent(host_id: int, payload: dict) -> Any:
     server_url = str(payload.get("server_url", "http://192.168.50.225:8001")).strip()
     target_ip = host.address
 
-    agent_src = "/opt/system-trace-agent/ashd_agent.py"
-    if not os.path.exists(agent_src):
+    # The agent script is shipped per-distro in the repo (content is identical
+    # except for a cosmetic os_type label); any variant works as a generic agent.
+    agent_src_candidates = [
+        "agents/ubuntu/ashd_agent.py",
+        "agents/debian/ashd_agent.py",
+        "agents/rocky/ashd_agent.py",
+        "agents/rhel/ashd_agent.py",
+        "agents/centos/ashd_agent.py",
+        "/opt/system-trace-agent/ashd_agent.py",
+    ]
+    agent_src = next((p for p in agent_src_candidates if os.path.exists(p)), None)
+    if not agent_src:
         return JSONResponse({"detail": "Agent file not found on server"}, status_code=500)
 
     # Read agent file content to embed directly (avoids heredoc issues with $)
@@ -1322,21 +1332,25 @@ async def _host_checker_loop() -> None:
 
             async def one(h) -> tuple[int, dict[str, Any]]:
                 async with sem:
+                    disabled = set(str(c).lower() for c in (getattr(h, "disabled_checks", None) or []))
                     try:
                         addr = str(getattr(h, "address", "") or "")
                         name = str(getattr(h, "name", "") or "")
                         icmp = await asyncio.to_thread(_check_host_icmp, addr)
-                        ssh = await asyncio.to_thread(_check_tcp_port, addr, 22, 1.0)
-                        dns = await asyncio.to_thread(_check_dns, addr, name)
-                        snmp = await asyncio.to_thread(_check_snmp_host, addr)
-                        ntp = await asyncio.to_thread(_check_ntp_server, addr)
-                        checks = {
-                            "icmp": icmp.model_dump(),
-                            "ssh": ssh.model_dump(),
-                            "dns": dns.model_dump(),
-                            "snmp": snmp.model_dump(),
-                            "ntp": ntp.model_dump(),
-                        }
+                        checks: dict[str, Any] = {"icmp": icmp.model_dump()}
+
+                        if "ssh" not in disabled:
+                            ssh = await asyncio.to_thread(_check_tcp_port, addr, 22, 1.0)
+                            checks["ssh"] = ssh.model_dump()
+                        if "dns" not in disabled:
+                            dns = await asyncio.to_thread(_check_dns, addr, name)
+                            checks["dns"] = dns.model_dump()
+                        if "snmp" not in disabled:
+                            snmp = await asyncio.to_thread(_check_snmp_host, addr)
+                            checks["snmp"] = snmp.model_dump()
+                        if "ntp" not in disabled:
+                            ntp = await asyncio.to_thread(_check_ntp_server, addr)
+                            checks["ntp"] = ntp.model_dump()
                     except Exception as e:
                         icmp = ProtocolStatus(status="crit", checked_ts=time.time(), message=f"check error: {e}")
                         checks = {"icmp": icmp.model_dump()}
@@ -1483,6 +1497,18 @@ async def _host_checker_loop() -> None:
                         _host_events.append(ev)
                 for ev in host_events:
                     await broadcaster.broadcast(ev)
+                # Also persist to the Logs page so System Events show up there too.
+                for ev in host_events:
+                    try:
+                        write_log(
+                            level=str(ev.get("level", "info")).lower(),
+                            source="system-events",
+                            message=f"{str(ev.get('check', '')).upper()}: {ev.get('message', '')}".strip(": "),
+                            hostname=str(ev.get("host_name", "")),
+                            ip=str(ev.get("address", "")),
+                        )
+                    except Exception:
+                        pass
 
             # Push to connected clients (dashboard listens and updates buttons).
             await broadcaster.broadcast(

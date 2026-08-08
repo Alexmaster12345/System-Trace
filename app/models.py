@@ -30,6 +30,14 @@ class HostBase(BaseModel):
     type: Optional[str] = Field(None, description="Optional host type (e.g. Linux/Windows/Network)")
     tags: list[str] = Field(default_factory=list, description="Tags for filtering/grouping")
     notes: Optional[str] = Field(None, description="Free-form notes")
+    disabled_checks: list[str] = Field(
+        default_factory=list,
+        description="Protocol checks to skip for this host (icmp/ssh/dns/snmp/ntp)",
+    )
+    agent_required: bool = Field(
+        True,
+        description="Whether a missing monitoring agent should be shown as a warning for this host",
+    )
 
 
 class HostCreate(HostBase):

@@ -1,7 +1,7 @@
 /* Users Management Styles */
 
 .usersWrap {
-  max-width: 1300px;
+  max-width: 1700px;
   margin: 0 auto;
   padding: 20px 24px 48px;
 }
@@ -60,7 +60,7 @@
   overflow-x: auto;
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 14px;
-  background: rgba(255,255,255,0.025);
+  background: var(--enterprise-panel, #1e293b);
 }
 
 .usersTable {
@@ -157,7 +157,7 @@
 }
 
 .modalContent {
-  background: #0d152a;
+  background: var(--glass);
   border: 1px solid rgba(255,255,255,0.10);
   border-radius: 14px;
   max-width: 500px;

@@ -1,7 +1,7 @@
 /* ===== Host Monitor Page ===== */
 
 .hmWrap {
-  max-width: 1300px;
+  max-width: 1700px;
   margin: 0 auto;
   padding: 20px 24px 48px;
 }
@@ -114,9 +114,9 @@
   font-weight: 700;
 }
 
-.hmTileVal.ok   { color: #4caf50; }
-.hmTileVal.warn { color: #ff9800; }
-.hmTileVal.crit { color: #f44336; }
+.hmTileVal.ok   { color: var(--ok); }
+.hmTileVal.warn { color: var(--warn); }
+.hmTileVal.crit { color: var(--crit); }
 
 /* --- Charts grid --- */
 .hmChartsGrid {

@@ -52,11 +52,19 @@ class SQLiteMetricsStorage:
                 tags_json TEXT NOT NULL,
                 notes TEXT,
                 is_active INTEGER NOT NULL DEFAULT 1,
-                created_ts REAL NOT NULL
+                created_ts REAL NOT NULL,
+                disabled_checks_json TEXT NOT NULL DEFAULT '[]',
+                agent_required INTEGER NOT NULL DEFAULT 1
             );
             """
         )
         conn.execute("CREATE INDEX IF NOT EXISTS idx_hosts_active ON hosts(is_active);")
+        # Migrate: add per-host check/agent columns if upgrading from an older DB.
+        existing_host_cols = {row[1] for row in conn.execute("PRAGMA table_info(hosts)").fetchall()}
+        if 'disabled_checks_json' not in existing_host_cols:
+            conn.execute("ALTER TABLE hosts ADD COLUMN disabled_checks_json TEXT NOT NULL DEFAULT '[]'")
+        if 'agent_required' not in existing_host_cols:
+            conn.execute("ALTER TABLE hosts ADD COLUMN agent_required INTEGER NOT NULL DEFAULT 1")
 
         # Generic inventory items (admin-managed).
         conn.execute(
@@ -190,7 +198,8 @@ class SQLiteMetricsStorage:
             return []
         conn = self._require_conn()
         sql = (
-            "SELECT id, name, address, type, tags_json, notes, is_active, created_ts "
+            "SELECT id, name, address, type, tags_json, notes, is_active, created_ts, "
+            "disabled_checks_json, agent_required "
             "FROM hosts "
             + ("WHERE is_active = 1 " if active_only else "")
             + "ORDER BY id DESC"
@@ -199,7 +208,7 @@ class SQLiteMetricsStorage:
             rows = conn.execute(sql).fetchall()
         out: list[Host] = []
         for row in rows:
-            (hid, name, address, htype, tags_json, notes, is_active, created_ts) = row
+            (hid, name, address, htype, tags_json, notes, is_active, created_ts, disabled_checks_json, agent_required) = row
             tags: list[str] = []
             try:
                 parsed = json.loads(tags_json or "[]")
@@ -207,6 +216,13 @@ class SQLiteMetricsStorage:
                     tags = [str(t) for t in parsed if str(t).strip()]
             except Exception:
                 tags = []
+            disabled_checks: list[str] = []
+            try:
+                parsed_dc = json.loads(disabled_checks_json or "[]")
+                if isinstance(parsed_dc, list):
+                    disabled_checks = [str(c) for c in parsed_dc if str(c).strip()]
+            except Exception:
+                disabled_checks = []
             out.append(
                 Host(
                     id=int(hid),
@@ -217,6 +233,8 @@ class SQLiteMetricsStorage:
                     notes=str(notes) if notes is not None and str(notes).strip() != "" else None,
                     is_active=bool(int(is_active) if is_active is not None else 0),
                     created_ts=float(created_ts),
+                    disabled_checks=disabled_checks,
+                    agent_required=bool(int(agent_required) if agent_required is not None else 1),
                 )
             )
         return out
@@ -228,10 +246,14 @@ class SQLiteMetricsStorage:
         now = time.time()
         tags = [str(t).strip() for t in (host_in.tags or []) if str(t).strip()]
         tags_json = json.dumps(tags, separators=(",", ":"))
+        disabled_checks = [str(c).strip() for c in (host_in.disabled_checks or []) if str(c).strip()]
+        disabled_checks_json = json.dumps(disabled_checks, separators=(",", ":"))
+        agent_required = bool(host_in.agent_required if host_in.agent_required is not None else True)
         with self._lock:
             cur = conn.execute(
-                "INSERT INTO hosts (name, address, type, tags_json, notes, is_active, created_ts) "
-                "VALUES (?, ?, ?, ?, ?, 1, ?)",
+                "INSERT INTO hosts (name, address, type, tags_json, notes, is_active, created_ts, "
+                "disabled_checks_json, agent_required) "
+                "VALUES (?, ?, ?, ?, ?, 1, ?, ?, ?)",
                 (
                     str(host_in.name).strip(),
                     str(host_in.address).strip(),
@@ -239,6 +261,8 @@ class SQLiteMetricsStorage:
                     tags_json,
                     (str(host_in.notes) if host_in.notes is not None and str(host_in.notes).strip() != "" else None),
                     float(now),
+                    disabled_checks_json,
+                    int(agent_required),
                 ),
             )
             conn.commit()
@@ -252,6 +276,8 @@ class SQLiteMetricsStorage:
             notes=(str(host_in.notes) if host_in.notes is not None and str(host_in.notes).strip() != "" else None),
             is_active=True,
             created_ts=float(now),
+            disabled_checks=disabled_checks,
+            agent_required=agent_required,
         )
 
     def update_host(self, host_id: int, host_in: "HostCreate") -> "Host | None":
@@ -260,31 +286,58 @@ class SQLiteMetricsStorage:
         conn = self._require_conn()
         tags = [str(t).strip() for t in (host_in.tags or []) if str(t).strip()]
         tags_json = json.dumps(tags, separators=(",", ":"))
+        disabled_checks = [str(c).strip() for c in (host_in.disabled_checks or []) if str(c).strip()]
+        disabled_checks_json = json.dumps(disabled_checks, separators=(",", ":"))
+        agent_required = bool(host_in.agent_required if host_in.agent_required is not None else True)
         with self._lock:
             cur = conn.execute(
-                "UPDATE hosts SET name=?, address=?, type=?, tags_json=?, notes=? WHERE id=? AND is_active=1",
+                "UPDATE hosts SET name=?, address=?, type=?, tags_json=?, notes=?, "
+                "disabled_checks_json=?, agent_required=? WHERE id=? AND is_active=1",
                 (
                     str(host_in.name).strip(),
                     str(host_in.address).strip(),
                     (str(host_in.type).strip() if host_in.type and str(host_in.type).strip() else None),
                     tags_json,
                     (str(host_in.notes) if host_in.notes and str(host_in.notes).strip() else None),
+                    disabled_checks_json,
+                    int(agent_required),
                     int(host_id),
                 ),
             )
             conn.commit()
         if not (cur.rowcount or 0):
             return None
-        rows = conn.execute("SELECT id, name, address, type, tags_json, notes, is_active, created_ts FROM hosts WHERE id=?", (int(host_id),)).fetchone()
+        rows = conn.execute(
+            "SELECT id, name, address, type, tags_json, notes, is_active, created_ts, "
+            "disabled_checks_json, agent_required FROM hosts WHERE id=?",
+            (int(host_id),),
+        ).fetchone()
         if not rows:
             return None
-        (hid, name, address, htype, tj, notes, is_active, created_ts) = rows
+        (hid, name, address, htype, tj, notes, is_active, created_ts, dcj, ar) = rows
         try:
             parsed_tags = json.loads(tj or "[]")
         except Exception:
             parsed_tags = []
+        try:
+            parsed_disabled_checks = json.loads(dcj or "[]")
+            if not isinstance(parsed_disabled_checks, list):
+                parsed_disabled_checks = []
+        except Exception:
+            parsed_disabled_checks = []
         from .models import Host
-        return Host(id=int(hid), name=str(name), address=str(address), type=htype or None, tags=parsed_tags, notes=notes or None, is_active=bool(is_active), created_ts=float(created_ts))
+        return Host(
+            id=int(hid),
+            name=str(name),
+            address=str(address),
+            type=htype or None,
+            tags=parsed_tags,
+            notes=notes or None,
+            is_active=bool(is_active),
+            created_ts=float(created_ts),
+            disabled_checks=[str(c) for c in parsed_disabled_checks],
+            agent_required=bool(int(ar) if ar is not None else 1),
+        )
 
     def deactivate_host(self, host_id: int) -> bool:
         if not self.enabled:

@@ -4,9 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>System Trace · Host Management</title>
-    <link rel="stylesheet" href="/static/assets/dashboard.css?v=20260615_1" />
-    <link rel="stylesheet" href="/static/assets/inventory.css?v=20260221_5" />
-    <script defer src="/static/assets/dashboard.js?v=20260615_1"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/static/assets/dashboard.css?v=20260808_obsidian24" />
+    <link rel="stylesheet" href="/static/assets/inventory.css?v=20260808_pro4" />
+    <script defer src="/static/assets/dashboard.js?v=20260808_pro11"></script>
     <style>
     /* Host card styles (rendered by JS) */
     .host-card { background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:16px 18px; transition:border-color 0.15s; }
@@ -61,7 +63,7 @@
     })();
     </script>
   </head>
-  <body class="sidebarAutoHide">
+  <body>
     <div class="appShell" id="appShell">
       <aside class="sidebar" id="sidebar" aria-label="Navigation">
         <div class="sideTop">
@@ -80,7 +82,7 @@
         <nav class="sideNav" id="sideNav" aria-label="Main">
           <div class="sideGroup">
             <a class="sideItem" href="/" data-action="dashboard" data-label="Dashboard"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span> Dashboard</a>
-            <a class="sideItem" href="/hosts" data-action="hosts" data-label="Servers" aria-current="page"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="5" rx="2"/><rect x="2" y="11" width="20" height="5" rx="2"/><circle cx="6" cy="5.5" r="1" fill="currentColor"/><circle cx="6" cy="13.5" r="1" fill="currentColor"/></svg></span> Servers</a>
+            <a class="sideItem" href="/hosts" data-action="hosts" data-label="Hosts" aria-current="page"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="5" rx="2"/><rect x="2" y="11" width="20" height="5" rx="2"/><circle cx="6" cy="5.5" r="1" fill="currentColor"/><circle cx="6" cy="13.5" r="1" fill="currentColor"/></svg></span> Hosts</a>
             <a class="sideItem" href="/maps" data-action="maps" data-label="Network"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span> Network</a>
             <a class="sideItem" href="/inventory" data-action="inventory" data-label="Inventory"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span> Inventory</a>
             <a class="sideItem" href="/configuration" data-action="configuration" data-label="Configuration"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span> Configuration</a>
@@ -147,7 +149,7 @@
               <div class="invCardTitle">Discovered Hosts</div>
             </div>
             <div id="hostsGrid" style="padding:0 18px 18px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
-              <div style="color:#888;padding:20px;">Loading hosts…</div>
+              <div style="color:var(--muted);padding:20px;">Loading hosts…</div>
             </div>
           </div>
 
@@ -310,7 +312,7 @@
           ]);
           const arr = Array.isArray(hosts) ? hosts : [];
           if (arr.length === 0) {
-            grid.innerHTML = '<div style="color:#888;padding:20px;grid-column:1/-1;">No hosts found. Run Auto Discover to scan your network.</div>';
+            grid.innerHTML = '<div style="color:var(--muted);padding:20px;grid-column:1/-1;">No hosts found. Run Auto Discover to scan your network.</div>';
             return;
           }
           grid.innerHTML = arr.map(h => {
@@ -319,9 +321,9 @@
             const agentOnline = agentEntry && agentEntry.status === 'online';
             const agentBadge = agentEntry
               ? (agentOnline
-                  ? '<span style="background:rgba(76,175,80,0.15);color:#4caf50;border:1px solid rgba(76,175,80,0.4);padding:2px 8px;border-radius:10px;font-size:11px;">● Online</span>'
-                  : '<span style="background:rgba(158,158,158,0.15);color:#9e9e9e;border:1px solid rgba(158,158,158,0.4);padding:2px 8px;border-radius:10px;font-size:11px;">● Offline</span>')
-              : '<span style="background:rgba(244,67,54,0.12);color:#f44336;border:1px solid rgba(244,67,54,0.35);padding:2px 8px;border-radius:10px;font-size:11px;">✕ No Agent</span>';
+                  ? '<span style="background:color-mix(in srgb, var(--ok) 15%, transparent);color:var(--ok);border:1px solid color-mix(in srgb, var(--ok) 40%, transparent);padding:2px 8px;border-radius:10px;font-size:11px;">● Online</span>'
+                  : '<span style="background:color-mix(in srgb, var(--neutral) 15%, transparent);color:var(--neutral);border:1px solid color-mix(in srgb, var(--neutral) 40%, transparent);padding:2px 8px;border-radius:10px;font-size:11px;">● Offline</span>')
+              : '<span style="background:color-mix(in srgb, var(--crit) 12%, transparent);color:var(--crit);border:1px solid color-mix(in srgb, var(--crit) 35%, transparent);padding:2px 8px;border-radius:10px;font-size:11px;">✕ No Agent</span>';
             const safeName = (h.name||h.address||'').replace(/'/g,"&#39;");
             return `<div class="host-card" data-host-id="${h.id}">
               <div class="host-header">
@@ -347,7 +349,7 @@
           }).join('');
         } catch(e) {
           console.error('loadHosts error:', e);
-          grid.innerHTML = '<div style="color:#f44336;padding:20px;grid-column:1/-1;">Failed to load hosts: ' + (e.message||e) + '</div>';
+          grid.innerHTML = '<div style="color:var(--crit);padding:20px;grid-column:1/-1;">Failed to load hosts: ' + (e.message||e) + '</div>';
         }
       }
 
@@ -371,7 +373,7 @@
       async function startAutoDiscovery() {
         const btn = document.getElementById('autoDiscoverIcon');
         const orig = btn ? btn.innerHTML : '';
-        if (btn) { btn.disabled = true; btn.innerHTML = '⏳ Discovering...'; btn.style.background = '#6c757d'; }
+        if (btn) { btn.disabled = true; btn.innerHTML = '⏳ Discovering...'; btn.style.background = 'var(--neutral)'; }
         try {
           const response = await fetch('/api/discovery/start', {
             method: 'POST',
@@ -380,13 +382,13 @@
           });
           const result = await response.json();
           if (response.ok) {
-            if (btn) { btn.innerHTML = '✅ ' + (result.message || 'Done'); btn.style.background = '#28a745'; }
+            if (btn) { btn.innerHTML = '✅ ' + (result.message || 'Done'); btn.style.background = 'var(--ok)'; }
           } else {
-            if (btn) { btn.innerHTML = '❌ Failed'; btn.style.background = '#dc3545'; }
+            if (btn) { btn.innerHTML = '❌ Failed'; btn.style.background = 'var(--crit)'; }
           }
         } catch(e) {
           console.error('Discovery error:', e);
-          if (btn) { btn.innerHTML = '❌ Error'; btn.style.background = '#dc3545'; }
+          if (btn) { btn.innerHTML = '❌ Error'; btn.style.background = 'var(--crit)'; }
         }
         // Always refresh grid after discovery
         await loadHosts();

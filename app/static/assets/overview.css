@@ -1,7 +1,7 @@
 /* Overview page styles (separate page). */
 
 .overviewWrap {
-  max-width: 1300px;
+  max-width: 1700px;
   margin: 0 auto;
   padding: 20px 24px 48px;
 }
@@ -45,7 +45,7 @@
   height: 8px;
   border-radius: 999px;
   background: var(--accent);
-  box-shadow: 0 0 0 3px rgba(110,231,255,0.12);
+  box-shadow: 0 0 0 3px rgba(76,141,255,0.14);
 }
 
 .overviewBadge .sep {

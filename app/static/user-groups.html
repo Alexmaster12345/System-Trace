@@ -4,9 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>System Trace · User Groups</title>
-    <link rel="stylesheet" href="/static/assets/dashboard.css?v=20260615_1" />
-    <link rel="stylesheet" href="/static/assets/users.css?v=20260310_1" />
-    <script defer src="/static/assets/dashboard.js?v=20260615_1"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/static/assets/dashboard.css?v=20260808_obsidian24" />
+    <link rel="stylesheet" href="/static/assets/users.css?v=20260808_pro4" />
+    <script defer src="/static/assets/dashboard.js?v=20260808_pro11"></script>
     <script defer src="/static/assets/user-groups.js?v=20260211_7"></script>
   <style>
     body.sidebarAutoHide:not(.sidebarHover):not(.sidebarOpen) .sidebar {
@@ -100,7 +102,7 @@
       }
     </style>
   </head>
-  <body class="sidebarAutoHide">
+  <body>
     <div class="appShell" id="appShell">
       <aside class="sidebar" id="sidebar" aria-label="Navigation">
         <div class="sideTop">
@@ -119,7 +121,7 @@
         <nav class="sideNav" id="sideNav" aria-label="Main">
           <div class="sideGroup">
             <a class="sideItem" href="/" data-action="dashboard" data-label="Dashboard"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span> Dashboard</a>
-            <a class="sideItem" href="/hosts" data-action="hosts" data-label="Servers"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="5" rx="2"/><rect x="2" y="11" width="20" height="5" rx="2"/><circle cx="6" cy="5.5" r="1" fill="currentColor"/><circle cx="6" cy="13.5" r="1" fill="currentColor"/></svg></span> Servers</a>
+            <a class="sideItem" href="/hosts" data-action="hosts" data-label="Hosts"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="5" rx="2"/><rect x="2" y="11" width="20" height="5" rx="2"/><circle cx="6" cy="5.5" r="1" fill="currentColor"/><circle cx="6" cy="13.5" r="1" fill="currentColor"/></svg></span> Hosts</a>
             <a class="sideItem" href="/maps" data-action="maps" data-label="Network"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span> Network</a>
             <a class="sideItem" href="/inventory" data-action="inventory" data-label="Inventory"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span> Inventory</a>
             <a class="sideItem" href="/configuration" data-action="configuration" data-label="Configuration"><span class="sideIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span> Configuration</a>
@@ -143,6 +145,7 @@
       </aside>
 
       <div class="content" id="content">
+        <div class="dashBgArt" aria-hidden="true"></div>
         <div class="usersWrap">
             <header class="usersHeader">
             <div>

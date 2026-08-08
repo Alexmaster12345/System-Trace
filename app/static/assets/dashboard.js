@@ -294,21 +294,29 @@ document.documentElement.dataset.theme = getPreferredTheme();
     return 'UNK';
   }
 
-  function renderProtoChipsInto(td, checks) {
+  function renderProtoChipsInto(td, checks, disabledChecks) {
     td.innerHTML = '';
     td.classList.add('hostsProto');
 
     const c = checks && typeof checks === 'object' ? checks : null;
-    if (!c) {
+    const disabled = new Set((Array.isArray(disabledChecks) ? disabledChecks : []).map((x) => String(x).toLowerCase()));
+    if (!c && !disabled.size) {
       td.textContent = '—';
       return;
     }
 
     const keys = ['icmp', 'ssh', 'snmp', 'ntp', 'dns'];
     for (const k of keys) {
-      const st = c[k] || null;
-      const sev = sevFromProtoStatus(st);
       const chip = document.createElement('span');
+      if (disabled.has(k)) {
+        chip.className = 'hostsProtoChip disabled';
+        chip.textContent = `${PROTO_LABELS[k] || k.toUpperCase()} OFF`;
+        chip.title = `${PROTO_LABELS[k] || k.toUpperCase()}: check disabled for this host`;
+        td.appendChild(chip);
+        continue;
+      }
+      const st = c ? (c[k] || null) : null;
+      const sev = sevFromProtoStatus(st);
       chip.className = `hostsProtoChip ${sev}`;
       chip.textContent = `${PROTO_LABELS[k] || k.toUpperCase()} ${shortProtoLabel(st)}`;
       try {
@@ -335,7 +343,8 @@ document.documentElement.dataset.theme = getPreferredTheme();
       const td = row.querySelector('td.hostsProto');
       if (!td) continue;
       const checks = hostChecks ? hostChecks[String(hostId)] || hostChecks[hostId] : null;
-      renderProtoChipsInto(td, checks);
+      const hostObj = Array.isArray(hostsListCache) ? hostsListCache.find((x) => String(x && x.id) === String(hostId)) : null;
+      renderProtoChipsInto(td, checks, hostObj && hostObj.disabled_checks);
     }
   }
 
@@ -513,9 +522,9 @@ document.documentElement.dataset.theme = getPreferredTheme();
 
   // Device type icon/label mapping
   const DEVICE_TYPE_META = {
-    'rack-server':  { icon: '🖥️',  label: 'Rack Server',   color: '#4fc3f7' },
-    'linux':        { icon: '🐧',  label: 'Linux Server',  color: '#4fc3f7' },
-    'windows':      { icon: '🪟',  label: 'Windows Server',color: '#4fc3f7' },
+    'rack-server':  { icon: '🖥️',  label: 'Rack Server',   color: '#4c8dff' },
+    'linux':        { icon: '🐧',  label: 'Linux Server',  color: '#4c8dff' },
+    'windows':      { icon: '🪟',  label: 'Windows Server',color: '#4c8dff' },
     'switch':       { icon: '🔀',  label: 'Network Switch', color: '#81c784' },
     'router':       { icon: '📡',  label: 'Router',         color: '#ffb74d' },
     'firewall':     { icon: '🛡️',  label: 'Firewall',       color: '#ef5350' },
@@ -592,7 +601,7 @@ document.documentElement.dataset.theme = getPreferredTheme();
       tdProto.className = 'hostsProto';
       if (hostId) {
         const checks = hostChecks ? hostChecks[String(hostId)] || hostChecks[hostId] : null;
-        renderProtoChipsInto(tdProto, checks);
+        renderProtoChipsInto(tdProto, checks, h && h.disabled_checks);
       } else {
         tdProto.textContent = '—';
       }
@@ -614,7 +623,7 @@ document.documentElement.dataset.theme = getPreferredTheme();
           const isMain = String(hostId) === String(window._dashHostId || '');
           mainBtn.textContent = isMain ? '⭐ Main' : '☆ Set Main';
           mainBtn.title = isMain ? 'Currently shown on main dashboard' : 'Show this host on main dashboard';
-          if (isMain) mainBtn.style.cssText = 'color:#ffd54f;border-color:rgba(255,213,79,0.5);background:rgba(255,213,79,0.1);';
+          if (isMain) mainBtn.style.cssText = 'color:var(--warn);border-color:color-mix(in srgb, var(--warn) 50%, transparent);background:color-mix(in srgb, var(--warn) 10%, transparent);';
           mainBtn.addEventListener('click', async () => {
             const newId = isMain ? null : hostId;
             await fetch('/api/admin/dashboard-host', {
@@ -647,13 +656,6 @@ document.documentElement.dataset.theme = getPreferredTheme();
       editBtn.addEventListener('click', () => openEditHostModal(h));
       tdAct.appendChild(editBtn);
 
-      const installBtn = document.createElement('button');
-      installBtn.type = 'button';
-      installBtn.className = 'hostsBtnSmall';
-      installBtn.textContent = '⚙ Install Agent';
-      installBtn.addEventListener('click', () => openInstallAgentModal(h));
-      tdAct.appendChild(installBtn);
-
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'hostsBtnSmall danger';
@@ -679,22 +681,27 @@ document.documentElement.dataset.theme = getPreferredTheme();
       if (agentEntry) {
         const online = agentEntry.status === 'online';
         if (online) {
-          badge.style.background = 'rgba(76,175,80,0.15)';
-          badge.style.color = '#4caf50';
-          badge.style.border = '1px solid rgba(76,175,80,0.4)';
+          badge.style.background = 'color-mix(in srgb, var(--ok) 15%, transparent)';
+          badge.style.color = 'var(--ok)';
+          badge.style.border = '1px solid color-mix(in srgb, var(--ok) 40%, transparent)';
           badge.textContent = '● Online';
         } else {
           const mins = agentEntry.last_seen ? Math.floor((Date.now()/1000 - agentEntry.last_seen) / 60) : null;
-          badge.style.background = 'rgba(158,158,158,0.15)';
-          badge.style.color = '#9e9e9e';
-          badge.style.border = '1px solid rgba(158,158,158,0.4)';
+          badge.style.background = 'color-mix(in srgb, var(--neutral) 15%, transparent)';
+          badge.style.color = 'var(--neutral)';
+          badge.style.border = '1px solid color-mix(in srgb, var(--neutral) 40%, transparent)';
           badge.textContent = '● Offline';
           if (mins !== null) badge.title = `Last seen ${mins}m ago`;
         }
+      } else if (h && h.agent_required === false) {
+        badge.style.background = 'color-mix(in srgb, var(--neutral) 12%, transparent)';
+        badge.style.color = 'var(--neutral)';
+        badge.style.border = '1px solid color-mix(in srgb, var(--neutral) 30%, transparent)';
+        badge.textContent = '— Not Required';
       } else {
-        badge.style.background = 'rgba(244,67,54,0.12)';
-        badge.style.color = '#f44336';
-        badge.style.border = '1px solid rgba(244,67,54,0.35)';
+        badge.style.background = 'color-mix(in srgb, var(--crit) 12%, transparent)';
+        badge.style.color = 'var(--crit)';
+        badge.style.border = '1px solid color-mix(in srgb, var(--crit) 35%, transparent)';
         badge.textContent = '✕ Not Installed';
       }
       tdAgent.appendChild(badge);
@@ -959,24 +966,6 @@ document.documentElement.dataset.theme = getPreferredTheme();
     }
   }
 
-  function openInstallAgentModal(h) {
-    const modal = document.getElementById('installAgentModal');
-    if (!modal) return;
-    document.getElementById('installAgentHostId').value = h.id;
-    document.getElementById('installAgentHostName').textContent = h.name + ' (' + h.address + ')';
-    document.getElementById('installAgentUser').value = 'root';
-    document.getElementById('installAgentPassword').value = '';
-    document.getElementById('installAgentPort').value = '22';
-    document.getElementById('installAgentError').style.display = 'none';
-    document.getElementById('installAgentSuccess').style.display = 'none';
-    modal.style.display = 'flex';
-  }
-
-  window.closeInstallAgentModal = function() {
-    const modal = document.getElementById('installAgentModal');
-    if (modal) modal.style.display = 'none';
-  };
-
   function setRowAgentStatus(hostId, state) {
     if (!els.hostsTbody) return;
     const row = els.hostsTbody.querySelector(`tr[data-host-id="${CSS.escape(String(hostId))}"]`);
@@ -991,19 +980,19 @@ document.documentElement.dataset.theme = getPreferredTheme();
     }
     if (state === 'installing') {
       badge.textContent = '⚙ Installing…';
-      badge.style.background = '#2a3a5e';
-      badge.style.color = '#7eb8ff';
+      badge.style.background = 'color-mix(in srgb, var(--info) 22%, transparent)';
+      badge.style.color = 'var(--info)';
       badge.style.animation = 'pulse 1s infinite';
     } else if (state === 'success') {
       badge.textContent = '✅ Agent installed';
-      badge.style.background = '#1a3a2a';
-      badge.style.color = '#4caf50';
+      badge.style.background = 'color-mix(in srgb, var(--ok) 18%, transparent)';
+      badge.style.color = 'var(--ok)';
       badge.style.animation = '';
       setTimeout(() => badge.remove(), 8000);
     } else if (state === 'failed') {
       badge.textContent = '❌ Failed';
-      badge.style.background = '#3a1a1a';
-      badge.style.color = '#ff6b6b';
+      badge.style.background = 'color-mix(in srgb, var(--crit) 18%, transparent)';
+      badge.style.color = 'var(--crit)';
       badge.style.animation = '';
       setTimeout(() => badge.remove(), 8000);
     } else {
@@ -1011,54 +1000,24 @@ document.documentElement.dataset.theme = getPreferredTheme();
     }
   }
 
-  window.runInstallAgent = async function() {
-    const id = document.getElementById('installAgentHostId').value;
-    const user = document.getElementById('installAgentUser').value.trim();
-    const password = document.getElementById('installAgentPassword').value;
-    const port = document.getElementById('installAgentPort').value.trim() || '22';
-    const errEl = document.getElementById('installAgentError');
-    const successEl = document.getElementById('installAgentSuccess');
-    const btn = document.getElementById('installAgentRunBtn');
-
-    if (!user || !password) {
-      errEl.textContent = 'SSH username and password are required.';
-      errEl.style.display = 'block';
-      return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = '⚙ Installing…';
-    errEl.style.display = 'none';
-    successEl.style.display = 'none';
-
-    // Show installing badge in the host row
-    setRowAgentStatus(id, 'installing');
-    // Close modal so user can see the row progress
-    window.closeInstallAgentModal();
-
+  async function runInstallAgentFor(hostId, user, password, port) {
+    setRowAgentStatus(hostId, 'installing');
     try {
-      const resp = await fetch(`/api/admin/hosts/${encodeURIComponent(id)}/install-agent`, {
+      const resp = await fetch(`/api/admin/hosts/${encodeURIComponent(hostId)}/install-agent`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ssh_user: user, ssh_password: password, ssh_port: parseInt(port), server_url: window.location.origin })
+        body: JSON.stringify({ ssh_user: user, ssh_password: password, ssh_port: parseInt(port, 10) || 22, server_url: window.location.origin })
       });
       const data = await resp.json();
       if (!resp.ok) throw new Error(data.detail || 'Install failed');
-      setRowAgentStatus(id, 'success');
-      // Refresh host list so hostname updates in the table
+      setRowAgentStatus(hostId, 'success');
       await refreshHosts();
+      return { ok: true };
     } catch (e) {
-      setRowAgentStatus(id, 'failed');
-      // Re-open modal to show error
-      const modal = document.getElementById('installAgentModal');
-      if (modal) modal.style.display = 'flex';
-      errEl.textContent = '❌ ' + (e.message || 'Install failed');
-      errEl.style.display = 'block';
-    } finally {
-      btn.disabled = false;
-      btn.textContent = '⚙ Install Agent';
+      setRowAgentStatus(hostId, 'failed');
+      return { ok: false, message: (e && e.message) ? e.message : 'Install failed' };
     }
-  };
+  }
 
   function openEditHostModal(h) {
     const modal = document.getElementById('editHostModal');
@@ -1068,9 +1027,29 @@ document.documentElement.dataset.theme = getPreferredTheme();
     document.getElementById('editHostModalAddress').value = h.address || '';
     document.getElementById('editHostModalType').value = h.type || '';
     document.getElementById('editHostModalNotes').value = h.notes || '';
+    const disabledChecks = Array.isArray(h.disabled_checks) ? h.disabled_checks.map((x) => String(x).toLowerCase()) : [];
+    document.getElementById('editHostModalDisableSsh').checked = disabledChecks.includes('ssh');
+    document.getElementById('editHostModalDisableSnmp').checked = disabledChecks.includes('snmp');
+    document.getElementById('editHostModalDisableNtp').checked = disabledChecks.includes('ntp');
+    document.getElementById('editHostModalAgentNotRequired').checked = h.agent_required === false;
+    const installCb = document.getElementById('editHostModalInstallAgent');
+    const agentFields = document.getElementById('editHostModalAgentFields');
+    installCb.checked = false;
+    agentFields.style.display = 'none';
+    document.getElementById('editHostModalSshUser').value = 'root';
+    document.getElementById('editHostModalSshPassword').value = '';
+    document.getElementById('editHostModalSshPort').value = '22';
+    document.getElementById('editHostModalAgentSuccess').style.display = 'none';
     document.getElementById('editHostModalError').style.display = 'none';
     modal.style.display = 'flex';
   }
+
+  document.addEventListener('change', (e) => {
+    if (e.target && e.target.id === 'editHostModalInstallAgent') {
+      const agentFields = document.getElementById('editHostModalAgentFields');
+      if (agentFields) agentFields.style.display = e.target.checked ? 'grid' : 'none';
+    }
+  });
 
   window.closeEditHostModal = function() {
     const modal = document.getElementById('editHostModal');
@@ -1083,22 +1062,51 @@ document.documentElement.dataset.theme = getPreferredTheme();
     const address = document.getElementById('editHostModalAddress').value.trim();
     const type = document.getElementById('editHostModalType').value.trim();
     const notes = document.getElementById('editHostModalNotes').value.trim();
+    const disabledChecks = [];
+    if (document.getElementById('editHostModalDisableSsh').checked) disabledChecks.push('ssh');
+    if (document.getElementById('editHostModalDisableSnmp').checked) disabledChecks.push('snmp');
+    if (document.getElementById('editHostModalDisableNtp').checked) disabledChecks.push('ntp');
+    const agentRequired = !document.getElementById('editHostModalAgentNotRequired').checked;
+    const wantsInstall = document.getElementById('editHostModalInstallAgent').checked;
+    const sshUser = document.getElementById('editHostModalSshUser').value.trim();
+    const sshPassword = document.getElementById('editHostModalSshPassword').value;
+    const sshPort = document.getElementById('editHostModalSshPort').value.trim() || '22';
     const errEl = document.getElementById('editHostModalError');
+    const successEl = document.getElementById('editHostModalAgentSuccess');
     const saveBtn = document.getElementById('editHostModalSaveBtn');
     if (!name || !address) {
       errEl.textContent = 'Name and Address are required.';
       errEl.style.display = 'block';
       return;
     }
+    if (wantsInstall && (!sshUser || !sshPassword)) {
+      errEl.textContent = 'SSH username and password are required to install the agent.';
+      errEl.style.display = 'block';
+      return;
+    }
     saveBtn.disabled = true;
     saveBtn.textContent = 'Saving…';
     errEl.style.display = 'none';
+    successEl.style.display = 'none';
     try {
       await fetchJson(`/api/admin/hosts/${encodeURIComponent(id)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, address, type: type || null, tags: [], notes: notes || null })
+        body: JSON.stringify({ name, address, type: type || null, tags: [], notes: notes || null, disabled_checks: disabledChecks, agent_required: agentRequired })
       });
+
+      if (wantsInstall) {
+        saveBtn.textContent = '⚙ Installing agent…';
+        const result = await runInstallAgentFor(id, sshUser, sshPassword, sshPort);
+        if (!result.ok) {
+          errEl.textContent = '❌ Host saved, but agent install failed: ' + result.message;
+          errEl.style.display = 'block';
+          saveBtn.disabled = false;
+          saveBtn.textContent = '💾 Save';
+          return;
+        }
+      }
+
       window.closeEditHostModal();
       await refreshHosts();
     } catch (e) {
@@ -1128,6 +1136,7 @@ document.documentElement.dataset.theme = getPreferredTheme();
       setHostsError(e && e.message ? e.message : 'Failed to load hosts');
     }
   }
+  window.refreshHosts = refreshHosts;
 
   // --- Maps (SVG) ---
   let mapEdit = false;
@@ -1811,7 +1820,7 @@ document.documentElement.dataset.theme = getPreferredTheme();
   // --- Sidebar UX (Zabbix-style menu) ---
   function setupSidebar() {
     const sidebar = document.getElementById('sidebar');
-    const sideToggle = document.getElementById('sideToggle');
+    const sideToggles = document.querySelectorAll('.sideToggle');
     const sideSearch = document.getElementById('sideSearch');
     const sideNav = document.getElementById('sideNav');
 
@@ -1826,11 +1835,9 @@ document.documentElement.dataset.theme = getPreferredTheme();
       typeof window.matchMedia === 'function' &&
       window.matchMedia('(min-width: 981px)').matches;
 
-    // Auto-hide sidebar on desktop: collapse to a thin left edge when mouse isn't near.
-    // (Mobile uses the drawer toggle instead.)
-    if (supportsHover && isDesktop) {
-      document.body.classList.add('sidebarAutoHide');
-    }
+    // Sidebar stays persistently visible on desktop (no auto-hide-to-sliver).
+    void supportsHover;
+    void isDesktop;
 
     // Collapse mode removed: ensure any previously saved preference can't
     // leave the UI stuck in a collapsed state with no control to expand.
@@ -1851,18 +1858,18 @@ document.documentElement.dataset.theme = getPreferredTheme();
       document.body.classList.toggle('sidebarHover', !!open);
     }
 
-    if (sideToggle) {
-      sideToggle.addEventListener('click', () => {
+    sideToggles.forEach((btn) => {
+      btn.addEventListener('click', () => {
         setOpen(!document.body.classList.contains('sidebarOpen'));
       });
-    }
+    });
 
     // Clicking outside closes the drawer on mobile.
     document.addEventListener('click', (e) => {
       if (!document.body.classList.contains('sidebarOpen')) return;
-      // clicks inside sidebar or on toggle shouldn't close
+      // clicks inside sidebar or on any toggle button shouldn't close
       const t = e.target;
-      if (t && (sidebar.contains(t) || (sideToggle && sideToggle.contains(t)))) return;
+      if (t && (sidebar.contains(t) || Array.from(sideToggles).some((btn) => btn.contains(t)))) return;
       setOpen(false);
     });
 
@@ -2227,9 +2234,9 @@ document.documentElement.dataset.theme = getPreferredTheme();
     // Ensure backing stores match display sizes before drawing.
     for (const c of sparkCanvases) resizeCanvasToDisplaySize(c);
 
-    drawSpark(els.cpuSpark, series.cpu, cssVar('--cpu', '#6ee7ff'));
-    drawSpark(els.memSpark, series.mem, cssVar('--mem', '#55ffa6'));
-    drawSpark(els.diskSpark, series.disk, cssVar('--disk', '#ffd166'));
+    drawSpark(els.cpuSpark, series.cpu, cssVar('--cpu', '#4c8dff'));
+    drawSpark(els.memSpark, series.mem, cssVar('--mem', '#3ddc97'));
+    drawSpark(els.diskSpark, series.disk, cssVar('--disk', '#e3b341'));
     drawSpark(els.gpuHealthSpark, series.gpuHealth, gpuHealthColor(gh));
   }
 
@@ -2434,7 +2441,7 @@ document.documentElement.dataset.theme = getPreferredTheme();
     if (status === 'crit') return 'var(--crit)';
     if (status === 'warn') return 'var(--warn)';
     if (status === 'ok') return 'var(--ok)';
-    return cssVar('--gpu', '#a78bfa');
+    return cssVar('--gpu', '#9d8cf0');
   }
 
   function proto(sample, name) {
@@ -2746,7 +2753,7 @@ document.documentElement.dataset.theme = getPreferredTheme();
         labels: Array(INFRA_MAX).fill(''),
         datasets: [{
           data: Array(INFRA_MAX).fill(0),
-          borderColor: '#6366f1',
+          borderColor: cssVar('--accent', '#4c8dff'),
           backgroundColor: gradient,
           fill: true,
           tension: 0.4,

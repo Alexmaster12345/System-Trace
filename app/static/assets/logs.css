@@ -1,7 +1,7 @@
 /* ===== System Logs Page ===== */
 
 .logsWrap {
-  max-width: 1300px;
+  max-width: 1700px;
   margin: 0 auto;
   padding: 20px 24px 48px;
 }
@@ -79,16 +79,16 @@
 .logsBtn:hover { background: rgba(255,255,255,0.13); }
 
 .logsBtnDanger {
-  background: rgba(244,67,54,0.10);
-  border: 1px solid rgba(244,67,54,0.30);
+  background: color-mix(in srgb, var(--crit) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--crit) 30%, transparent);
   border-radius: 8px;
-  color: #f44336;
+  color: var(--crit);
   font-size: 12px;
   padding: 6px 14px;
   cursor: pointer;
   transition: background 0.15s;
 }
-.logsBtnDanger:hover { background: rgba(244,67,54,0.20); }
+.logsBtnDanger:hover { background: color-mix(in srgb, var(--crit) 20%, transparent); }
 
 .logsConnBadge {
   display: inline-flex;
@@ -126,9 +126,9 @@
   font-size: 26px;
   font-weight: 700;
 }
-.logsSumTile.crit  { color: #f44336; border-color: rgba(244,67,54,0.30); background: rgba(244,67,54,0.07); }
-.logsSumTile.warn  { color: #ff9800; border-color: rgba(255,152,0,0.30);  background: rgba(255,152,0,0.07); }
-.logsSumTile.info  { color: #63b3ed; border-color: rgba(99,179,237,0.30); background: rgba(99,179,237,0.07); }
+.logsSumTile.crit  { color: var(--crit); border-color: color-mix(in srgb, var(--crit) 30%, transparent); background: color-mix(in srgb, var(--crit) 7%, transparent); }
+.logsSumTile.warn  { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 30%, transparent);  background: color-mix(in srgb, var(--warn) 7%, transparent); }
+.logsSumTile.info  { color: var(--info); border-color: color-mix(in srgb, var(--info) 30%, transparent); background: color-mix(in srgb, var(--info) 7%, transparent); }
 .logsSumTile.total { color: var(--text); }
 
 .logsSumLabel {
@@ -145,7 +145,7 @@
   overflow-x: auto;
   border-radius: 14px;
   border: 1px solid rgba(255,255,255,0.08);
-  background: rgba(255,255,255,0.025);
+  background: var(--enterprise-panel, #1e293b);
 }
 
 .logsTable {
@@ -200,9 +200,9 @@
   border-radius: 999px;
   white-space: nowrap;
 }
-.logLevel.crit { color: #f44336; background: rgba(244,67,54,0.14); border: 1px solid rgba(244,67,54,0.30); }
-.logLevel.warn { color: #ff9800; background: rgba(255,152,0,0.12);  border: 1px solid rgba(255,152,0,0.28); }
-.logLevel.info { color: #63b3ed; background: rgba(99,179,237,0.10); border: 1px solid rgba(99,179,237,0.25); }
+.logLevel.crit { color: var(--crit); background: color-mix(in srgb, var(--crit) 14%, transparent); border: 1px solid color-mix(in srgb, var(--crit) 30%, transparent); }
+.logLevel.warn { color: var(--warn); background: color-mix(in srgb, var(--warn) 12%, transparent);  border: 1px solid color-mix(in srgb, var(--warn) 28%, transparent); }
+.logLevel.info { color: var(--info); background: color-mix(in srgb, var(--info) 10%, transparent); border: 1px solid color-mix(in srgb, var(--info) 25%, transparent); }
 
 .logHost {
   font-weight: 600;
@@ -225,16 +225,16 @@
 }
 
 /* --- Row coloring by level --- */
-.logsTable tbody tr.row-crit { background: rgba(244,67,54,0.05); }
-.logsTable tbody tr.row-warn { background: rgba(255,152,0,0.04); }
+.logsTable tbody tr.row-crit { background: color-mix(in srgb, var(--crit) 5%, transparent); }
+.logsTable tbody tr.row-warn { background: color-mix(in srgb, var(--warn) 4%, transparent); }
 
 /* ===== Host Monitor Error Panel ===== */
 
 .hmErrPanel {
   margin-bottom: 20px;
-  border: 1px solid rgba(244,67,54,0.30);
+  border: 1px solid color-mix(in srgb, var(--crit) 30%, transparent);
   border-radius: 12px;
-  background: rgba(244,67,54,0.06);
+  background: color-mix(in srgb, var(--crit) 6%, transparent);
   overflow: hidden;
 }
 
@@ -243,7 +243,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 16px;
-  border-bottom: 1px solid rgba(244,67,54,0.15);
+  border-bottom: 1px solid color-mix(in srgb, var(--crit) 15%, transparent);
   font-size: 12px;
   font-weight: 600;
 }
@@ -252,13 +252,13 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #f44336;
+  color: var(--crit);
 }
 
 .hmErrBlink {
   width: 8px; height: 8px;
   border-radius: 50%;
-  background: #f44336;
+  background: var(--crit);
   animation: errBlink 0.9s ease-in-out infinite;
   flex-shrink: 0;
 }
@@ -270,7 +270,7 @@
 
 .hmErrPanelLink {
   font-size: 11px;
-  color: #f44336;
+  color: var(--crit);
   text-decoration: none;
   opacity: 0.7;
   transition: opacity 0.15s;
@@ -309,19 +309,19 @@
   padding: 2px 7px;
   border-radius: 999px;
 }
-.hmErrLevel.crit { color: #f44336; background: rgba(244,67,54,0.14); }
-.hmErrLevel.warn { color: #ff9800; background: rgba(255,152,0,0.12); }
+.hmErrLevel.crit { color: var(--crit); background: color-mix(in srgb, var(--crit) 14%, transparent); }
+.hmErrLevel.warn { color: var(--warn); background: color-mix(in srgb, var(--warn) 12%, transparent); }
 
 .hmErrMsg { opacity: 0.85; }
 
 /* Blink the whole host header when there's an active problem */
 @keyframes headerBlink {
-  0%, 100% { border-color: rgba(244,67,54,0.55); box-shadow: 0 0 0 0 rgba(244,67,54,0); }
-  50%       { border-color: rgba(244,67,54,0.90); box-shadow: 0 0 12px 2px rgba(244,67,54,0.25); }
+  0%, 100% { border-color: color-mix(in srgb, var(--crit) 55%, transparent); box-shadow: 0 0 0 0 color-mix(in srgb, var(--crit) 0%, transparent); }
+  50%       { border-color: color-mix(in srgb, var(--crit) 90%, transparent); box-shadow: 0 0 12px 2px color-mix(in srgb, var(--crit) 25%, transparent); }
 }
 
 .hmWrap.hasProblem .hmHeader {
-  border: 1px solid rgba(244,67,54,0.55);
+  border: 1px solid color-mix(in srgb, var(--crit) 55%, transparent);
   border-radius: 12px;
   padding: 10px 14px;
   animation: headerBlink 1.4s ease-in-out infinite;
