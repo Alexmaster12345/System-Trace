@@ -49,32 +49,6 @@ ai-system-health-dashboard/
 | User Management | `/users` | User accounts |
 | User Groups | `/user-groups` | Group-based access control |
 
-## Screenshots
-
-### Login
-![Login](docs/screenshots/01_login.png)
-
-### Dashboard
-![Dashboard](docs/screenshots/02_dashboard.png)
-
-### Hosts
-![Hosts](docs/screenshots/09_hosts_mgmt.png)
-
-### Maps
-![Maps](docs/screenshots/05_maps.png)
-
-### Inventory
-![Inventory](docs/screenshots/06_inventory.png)
-
-### System Logs
-![System Logs](docs/screenshots/10_system_logs.png)
-
-### Users
-![Users](docs/screenshots/11_users.png)
-
-### Host Monitor
-![Host Monitor](docs/screenshots/12_host_monitor.png)
-
 ## Changelog
 
 ### Aug 8, 2026
